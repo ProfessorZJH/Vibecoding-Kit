@@ -1,0 +1,18 @@
+current_task: T-000
+mode: initialization
+require_commit: true
+require_push: false
+protected_branches:
+  - main
+  - master
+forbidden_paths:
+  - .env
+  - .env.*
+  - target/**
+  - .m2home/**
+  - .idea/**
+  - node_modules/**
+  - "*.pem"
+  - "*.key"
+  - id_rsa
+  - id_ed25519

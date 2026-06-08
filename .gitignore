@@ -1,0 +1,11 @@
+.DS_Store
+*.log
+tmp/
+.tmp/
+target/
+node_modules/
+.m2home/
+.idea/
+.env
+.env.*
+reports/ai-closeout/

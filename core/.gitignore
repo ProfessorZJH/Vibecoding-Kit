@@ -1,0 +1,12 @@
+.DS_Store
+*.log
+target/
+node_modules/
+.m2home/
+.idea/
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_ed25519
