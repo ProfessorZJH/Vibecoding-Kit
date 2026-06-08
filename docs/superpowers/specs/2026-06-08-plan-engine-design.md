@@ -1,7 +1,7 @@
 # Plan Engine Design
 
 date: 2026-06-08
-status: draft-for-review
+status: approved
 source: `docs/research/AI_WORKFLOW_BENCHMARK.md`
 
 ## Goal
