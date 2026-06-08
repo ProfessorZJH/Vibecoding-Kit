@@ -1,0 +1,20 @@
+# Vibecoding Protocol
+
+Windsurf must use `docs/tasks/T-xxx.md` as the task source of truth.
+
+Startup:
+- Read `docs/PROJECT_STATE.md`.
+- Read `docs/AI_STATE.yml`.
+- Read `docs/AI_RULES_INDEX.md`.
+- Read `docs/ai/PLAN_PROTOCOL.md`.
+- Read the current task card.
+- Run `bash scripts/ai-preflight.sh T-xxx`.
+
+Planning:
+- Windsurf plans are scratch work.
+- Write the final plan and allowed file scope into `docs/tasks/T-xxx.md`.
+
+Completion:
+- Run `bash scripts/drift-guard.sh`.
+- Run `bash scripts/task-closeout.sh T-xxx --write-report`.
+- Report commit and push checkpoints.

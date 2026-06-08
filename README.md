@@ -14,6 +14,7 @@ bash installer/init.sh \
   --name my-project \
   --profile ddd \
   --profile finance \
+  --profile agent-adapters \
   --ci gitcode
 ```
 
@@ -27,6 +28,8 @@ bash installer/init.sh \
   --profile vue \
   --profile ddd \
   --profile finance \
+  --profile api-contract \
+  --profile agent-adapters \
   --ci gitcode \
   --ci github
 ```
@@ -38,6 +41,9 @@ bash installer/init.sh \
 - `finance`: financial safety, audit, permission, and AI execution boundaries.
 - `java-spring`: Java/Spring guard docs and CI commands.
 - `vue`: Vue guard docs and CI commands.
+- `api-contract`: contract-first API planning before Swagger/OpenAPI output.
+- `agent-adapters`: tool entry files for Codex, Claude Code, Gemini, Cursor,
+  Windsurf, Cline, Roo, GitHub Copilot, and Superpowers-compatible planning.
 
 ## Verify The Kit
 

@@ -19,7 +19,7 @@ usage() {
 Usage: bash installer/init.sh --target PATH --name NAME [options]
 
 Options:
-  --profile NAME           Add profile: ddd, finance, java-spring, vue, api-contract
+  --profile NAME           Add profile: ddd, finance, java-spring, vue, api-contract, agent-adapters
   --ci NAME                Add CI workflow: none, gitcode, github
   --group-id VALUE         Maven groupId for optional scaffold
   --version VALUE          Maven version for optional scaffold
@@ -107,6 +107,10 @@ for profile in "${profiles[@]}"; do
     api-contract)
       copy_tree "$KIT_ROOT/profiles/api-contract/docs" "$target/docs"
       copy_tree "$KIT_ROOT/profiles/api-contract/scripts" "$target/scripts"
+      ;;
+    agent-adapters)
+      copy_tree "$KIT_ROOT/profiles/agent-adapters/root" "$target"
+      copy_tree "$KIT_ROOT/profiles/agent-adapters/docs" "$target/docs"
       ;;
     java-spring)
       copy_tree "$KIT_ROOT/profiles/java-spring/docs" "$target/docs"

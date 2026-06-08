@@ -1,0 +1,27 @@
+---
+description: Vibecoding project operating protocol
+alwaysApply: true
+---
+
+# Vibecoding Protocol
+
+Cursor must use repository files as the source of truth.
+
+Before editing:
+
+1. Read `docs/PROJECT_STATE.md`.
+2. Read `docs/AI_STATE.yml`.
+3. Read `docs/AI_RULES_INDEX.md`.
+4. Read `docs/ai/PLAN_PROTOCOL.md`.
+5. Read the current task card under `docs/tasks/T-xxx.md`.
+6. Run `bash scripts/ai-preflight.sh T-xxx`.
+
+Cursor composer plans and chat plans are scratch work. The executable plan must
+be reflected in `docs/tasks/T-xxx.md`.
+
+Before completion, run:
+
+```bash
+bash scripts/drift-guard.sh
+bash scripts/task-closeout.sh T-xxx --write-report
+```

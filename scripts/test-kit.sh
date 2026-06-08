@@ -51,6 +51,7 @@ XFG_TARGET="$TMP_DIR/xfg-project"
 
 help_text="$(bash installer/init.sh --help)"
 assert_contains "$help_text" "api-contract"
+assert_contains "$help_text" "agent-adapters"
 
 bash installer/init.sh \
   --target "$MVP_TARGET" \
@@ -134,6 +135,7 @@ bash installer/init.sh \
   --profile ddd \
   --profile finance \
   --profile api-contract \
+  --profile agent-adapters \
   --ci gitcode \
   --ci github \
   --write-report
@@ -143,10 +145,33 @@ assert_file "$FULL_TARGET/.github/workflows/ai-guard.yml"
 assert_file "$FULL_TARGET/docs/API_SPEC.md"
 assert_file "$FULL_TARGET/docs/API_STYLE.md"
 assert_contains "$(cat "$FULL_TARGET/docs/AI_RULES_VERSION.yml")" "  - api-contract"
+assert_contains "$(cat "$FULL_TARGET/docs/AI_RULES_VERSION.yml")" "  - agent-adapters"
 assert_file "$FULL_TARGET/docs/JAVA_SPRING_STYLE.md"
 assert_file "$FULL_TARGET/docs/VUE_STYLE.md"
+assert_file "$FULL_TARGET/docs/ai/PLAN_PROTOCOL.md"
+assert_file "$FULL_TARGET/docs/ai/AGENT_COMPATIBILITY.md"
+assert_file "$FULL_TARGET/docs/ai/CODEX_BRIDGE.md"
+assert_file "$FULL_TARGET/docs/ai/CLAUDE_CODE_BRIDGE.md"
+assert_file "$FULL_TARGET/docs/ai/SUPERPOWERS_BRIDGE.md"
+assert_file "$FULL_TARGET/AGENTS.md"
+assert_file "$FULL_TARGET/CLAUDE.md"
+assert_file "$FULL_TARGET/GEMINI.md"
+assert_file "$FULL_TARGET/.cursor/rules/vibecoding.mdc"
+assert_file "$FULL_TARGET/.windsurfrules"
+assert_file "$FULL_TARGET/.clinerules"
+assert_file "$FULL_TARGET/.roo/rules/vibecoding.md"
+assert_file "$FULL_TARGET/.github/copilot-instructions.md"
+assert_contains "$(cat "$FULL_TARGET/docs/ai/PLAN_PROTOCOL.md")" "docs/tasks/T-xxx.md"
+assert_contains "$(cat "$FULL_TARGET/docs/ai/PLAN_PROTOCOL.md")" "bash scripts/ai-preflight.sh T-xxx"
+assert_contains "$(cat "$FULL_TARGET/docs/ai/PLAN_PROTOCOL.md")" "bash scripts/drift-guard.sh"
+assert_contains "$(cat "$FULL_TARGET/docs/ai/PLAN_PROTOCOL.md")" "bash scripts/task-closeout.sh T-xxx --write-report"
+assert_contains "$(cat "$FULL_TARGET/docs/ai/PLAN_PROTOCOL.md")" "COMMIT_CHECKPOINT"
+assert_contains "$(cat "$FULL_TARGET/AGENTS.md")" "docs/ai/PLAN_PROTOCOL.md"
+assert_contains "$(cat "$FULL_TARGET/CLAUDE.md")" "docs/ai/PLAN_PROTOCOL.md"
+assert_contains "$(cat "$FULL_TARGET/.cursor/rules/vibecoding.mdc")" "alwaysApply: true"
 assert_file "$FULL_TARGET/reports/vibecoding-init.md"
 assert_contains "$(cat "$FULL_TARGET/reports/vibecoding-init.md")" "- api-contract"
+assert_contains "$(cat "$FULL_TARGET/reports/vibecoding-init.md")" "- agent-adapters"
 assert_contains "$(cat "$FULL_TARGET/reports/vibecoding-init.md")" "bash scripts/task-closeout.sh T-000 --no-tests --write-report"
 assert_executable "$FULL_TARGET/scripts/api-contract-lint.sh"
 assert_executable "$FULL_TARGET/scripts/api-contract-guard.sh"
