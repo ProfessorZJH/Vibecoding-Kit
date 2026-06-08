@@ -13,7 +13,7 @@ assert_contains() {
   [[ "$1" == *"$2"* ]] || fail "expected output to contain: $2"
 }
 
-for file in scripts/ai-preflight.sh scripts/drift-guard.sh scripts/task-closeout.sh scripts/install-git-hooks.sh; do
+for file in scripts/ai-preflight.sh scripts/drift-guard.sh scripts/task-closeout.sh scripts/install-git-hooks.sh scripts/task-card-lint.sh scripts/secrets-guard.sh; do
   [[ -x "$file" ]] || fail "$file missing or not executable"
 done
 
@@ -23,6 +23,17 @@ assert_contains "$preflight" "current_task: T-000"
 
 drift="$(bash scripts/drift-guard.sh)"
 assert_contains "$drift" "DRIFT_GUARD_PASS"
+assert_contains "$drift" "TASK_CARD_LINT_PASS"
+assert_contains "$drift" "SECRETS_GUARD_PASS"
+if [[ -x scripts/api-contract-guard.sh ]]; then
+  assert_contains "$drift" "API_CONTRACT_LINT_PASS"
+fi
+
+task_lint="$(bash scripts/task-card-lint.sh T-000)"
+assert_contains "$task_lint" "TASK_CARD_LINT_PASS"
+
+secrets_guard="$(bash scripts/secrets-guard.sh)"
+assert_contains "$secrets_guard" "SECRETS_GUARD_PASS"
 
 closeout="$(bash scripts/task-closeout.sh T-000 --no-tests)"
 assert_contains "$closeout" "CLOSEOUT"

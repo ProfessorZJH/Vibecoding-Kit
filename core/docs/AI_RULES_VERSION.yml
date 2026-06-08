@@ -1,0 +1,6 @@
+kit_version: 0.1.0
+installed_at: __INSTALLED_AT__
+project: __PROJECT_NAME__
+profiles:
+  - core
+source_commit: __SOURCE_COMMIT__

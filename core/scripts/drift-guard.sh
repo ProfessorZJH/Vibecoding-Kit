@@ -22,8 +22,16 @@ artifact_hits="$(git ls-files --others --cached --exclude-standard 2>/dev/null |
 for guard in scripts/*-guard.sh; do
   [[ -x "$guard" ]] || continue
   [[ "$guard" == "scripts/drift-guard.sh" ]] && continue
+  [[ "$guard" == "scripts/secrets-guard.sh" ]] && continue
   bash "$guard"
 done
+
+current_task="$(awk -F: '$1 == "current_task" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' docs/AI_STATE.yml 2>/dev/null || true)"
+if [[ "$current_task" =~ ^T-[0-9]{3}$ ]]; then
+  bash scripts/task-card-lint.sh "$current_task"
+fi
+
+bash scripts/secrets-guard.sh
 
 if ! git diff --check >/tmp/vibecoding-kit-diff-check.out 2>/tmp/vibecoding-kit-diff-check.err; then
   record_failure "git diff --check" "$(cat /tmp/vibecoding-kit-diff-check.err)"

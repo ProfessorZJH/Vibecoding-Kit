@@ -12,19 +12,21 @@ profiles=()
 cis=()
 apply_xfg=false
 install_hooks=false
+write_report=false
 
 usage() {
   cat <<EOF
 Usage: bash installer/init.sh --target PATH --name NAME [options]
 
 Options:
-  --profile NAME           Add profile: ddd, finance, java-spring, vue
+  --profile NAME           Add profile: ddd, finance, java-spring, vue, api-contract
   --ci NAME                Add CI workflow: none, gitcode, github
   --group-id VALUE         Maven groupId for optional scaffold
   --version VALUE          Maven version for optional scaffold
   --package VALUE          Java package for optional scaffold
   --apply-xfg-scaffold     Copy XFG archetype resources into project root with basic substitution
   --install-hooks          Install Git hooks after initialization
+  --write-report           Write reports/vibecoding-init.md
 EOF
 }
 
@@ -48,6 +50,8 @@ while [[ $# -gt 0 ]]; do
       apply_xfg=true ;;
     --install-hooks)
       install_hooks=true ;;
+    --write-report)
+      write_report=true ;;
     -h|--help)
       usage; exit 0 ;;
     *)
@@ -79,6 +83,13 @@ replace_project_name() {
 copy_tree "$KIT_ROOT/core" "$target"
 replace_project_name
 
+installed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+source_commit="$(git -C "$KIT_ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+sed -i \
+  -e "s/__INSTALLED_AT__/${installed_at}/g" \
+  -e "s/__SOURCE_COMMIT__/${source_commit}/g" \
+  "$target/docs/AI_RULES_VERSION.yml"
+
 mkdir -p "$target/docs/tasks" "$target/reports/ai-closeout"
 
 for profile in "${profiles[@]}"; do
@@ -92,6 +103,10 @@ for profile in "${profiles[@]}"; do
     finance)
       copy_tree "$KIT_ROOT/profiles/finance/docs" "$target/docs"
       copy_tree "$KIT_ROOT/profiles/finance/scripts" "$target/scripts"
+      ;;
+    api-contract)
+      copy_tree "$KIT_ROOT/profiles/api-contract/docs" "$target/docs"
+      copy_tree "$KIT_ROOT/profiles/api-contract/scripts" "$target/scripts"
       ;;
     java-spring)
       copy_tree "$KIT_ROOT/profiles/java-spring/docs" "$target/docs"
@@ -109,6 +124,24 @@ for profile in "${profiles[@]}"; do
       ;;
   esac
 done
+
+version_file="$target/docs/AI_RULES_VERSION.yml"
+profiles_tmp="$(mktemp)"
+{
+  echo "profiles:"
+  echo "  - core"
+  for profile in "${profiles[@]}"; do
+    [[ -n "$profile" ]] && echo "  - $profile"
+  done
+} >"$profiles_tmp"
+awk '
+  BEGIN { replacing = 0 }
+  /^profiles:/ { replacing = 1; while ((getline line < profiles_file) > 0) print line; next }
+  replacing && /^  - / { next }
+  { replacing = 0; print }
+' profiles_file="$profiles_tmp" "$version_file" >"$version_file.tmp"
+mv "$version_file.tmp" "$version_file"
+rm -f "$profiles_tmp"
 
 if [[ "$apply_xfg" == true ]]; then
   src="$KIT_ROOT/profiles/ddd/xfg-archetype/archetype-resources"
@@ -160,6 +193,45 @@ fi
 
 if [[ "$install_hooks" == true ]]; then
   (cd "$target" && bash scripts/install-git-hooks.sh)
+fi
+
+if [[ "$write_report" == true ]]; then
+  mkdir -p "$target/reports"
+  {
+    echo "# Vibecoding Init Report"
+    echo
+    echo "## Project"
+    echo
+    echo "- name: $name"
+    echo "- target: $target"
+    echo "- installed_at: $installed_at"
+    echo "- source_commit: $source_commit"
+    echo
+    echo "## Profiles"
+    echo
+    echo "- core"
+    for profile in "${profiles[@]}"; do
+      [[ -n "$profile" ]] && echo "- $profile"
+    done
+    echo
+    echo "## CI"
+    echo
+    if [[ "${#cis[@]}" -eq 0 ]]; then
+      echo "- none"
+    else
+      for ci in "${cis[@]}"; do
+        echo "- $ci"
+      done
+    fi
+    echo
+    echo "## Next Commands"
+    echo
+    echo '```bash'
+    echo 'bash scripts/ai-preflight.sh T-000'
+    echo 'bash scripts/drift-guard.sh'
+    echo 'bash scripts/task-closeout.sh T-000 --no-tests --write-report'
+    echo '```'
+  } >"$target/reports/vibecoding-init.md"
 fi
 
 cat <<EOF
