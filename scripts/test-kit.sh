@@ -70,6 +70,13 @@ assert_not_contains "$(cat "$MVP_TARGET/docs/AI_RULES_VERSION.yml")" "__INSTALLE
 assert_contains "$(cat "$MVP_TARGET/docs/AI_RULES_VERSION.yml")" "  - ddd"
 assert_contains "$(cat "$MVP_TARGET/docs/AI_RULES_VERSION.yml")" "  - finance"
 assert_file "$MVP_TARGET/docs/tasks/T-000.md"
+assert_file "$MVP_TARGET/docs/CONSTITUTION.md"
+assert_file "$MVP_TARGET/docs/specs/REQUIREMENTS_TEMPLATE.md"
+assert_file "$MVP_TARGET/docs/designs/DESIGN_TEMPLATE.md"
+assert_file "$MVP_TARGET/docs/plans/PLAN_TEMPLATE.md"
+assert_file "$MVP_TARGET/docs/plans/T-000-plan.md"
+assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "require_plan_guard: true"
+assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "plan_status: locked"
 assert_file "$MVP_TARGET/reports/vibecoding-init.md"
 assert_contains "$(cat "$MVP_TARGET/reports/vibecoding-init.md")" "bash scripts/ai-preflight.sh T-000"
 assert_file "$MVP_TARGET/docs/DDD_STYLE.md"
@@ -82,6 +89,10 @@ assert_executable "$MVP_TARGET/scripts/task-card-lint.sh"
 assert_executable "$MVP_TARGET/scripts/secrets-guard.sh"
 assert_executable "$MVP_TARGET/scripts/architecture-guard.sh"
 assert_executable "$MVP_TARGET/scripts/finance-guard.sh"
+assert_executable "$MVP_TARGET/scripts/spec-lint.sh"
+assert_executable "$MVP_TARGET/scripts/plan-lock.sh"
+assert_executable "$MVP_TARGET/scripts/plan-guard.sh"
+assert_executable "$MVP_TARGET/scripts/plan-step.sh"
 
 mvp_preflight="$(cd "$MVP_TARGET" && bash scripts/ai-preflight.sh T-000)"
 assert_contains "$mvp_preflight" "PRECHECK"
@@ -92,6 +103,46 @@ assert_contains "$mvp_drift" "DRIFT_GUARD_PASS"
 assert_contains "$mvp_drift" "TASK_CARD_LINT_PASS"
 assert_contains "$mvp_drift" "SECRETS_GUARD_PASS"
 assert_count "$mvp_drift" "SECRETS_GUARD_PASS" "1"
+
+mvp_spec_lint="$(cd "$MVP_TARGET" && bash scripts/spec-lint.sh T-000)"
+assert_contains "$mvp_spec_lint" "SPEC_LINT_PASS"
+
+mvp_plan_guard="$(cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001)"
+assert_contains "$mvp_plan_guard" "PLAN_GUARD_PASS"
+
+mvp_plan_start="$(cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --start)"
+assert_contains "$mvp_plan_start" "PLAN_STEP_START"
+
+mvp_plan_complete="$(cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --complete)"
+assert_contains "$mvp_plan_complete" "PLAN_STEP_COMPLETE"
+
+cp "$MVP_TARGET/docs/AI_STATE.yml" "$MVP_TARGET/docs/AI_STATE.yml.bak"
+sed -i 's/plan_status: locked/plan_status: draft/' "$MVP_TARGET/docs/AI_STATE.yml"
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >/tmp/vibecoding-kit-plan-unlocked.out 2>&1; then
+  fail "plan-guard should reject unlocked plan"
+fi
+assert_contains "$(cat /tmp/vibecoding-kit-plan-unlocked.out)" "PLAN_GUARD_FAIL: plan not locked"
+mv "$MVP_TARGET/docs/AI_STATE.yml.bak" "$MVP_TARGET/docs/AI_STATE.yml"
+
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-999) >/tmp/vibecoding-kit-plan-step.out 2>&1; then
+  fail "plan-guard should reject wrong current step"
+fi
+assert_contains "$(cat /tmp/vibecoding-kit-plan-step.out)" "PLAN_STEP_FAIL: step is not current"
+
+printf 'drift\n' >"$MVP_TARGET/unplanned.txt"
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >/tmp/vibecoding-kit-plan-drift.out 2>&1; then
+  fail "plan-guard should reject files outside current step allowlist"
+fi
+assert_contains "$(cat /tmp/vibecoding-kit-plan-drift.out)" "PLAN_GUARD_FAIL: unauthorized file"
+rm -f "$MVP_TARGET/unplanned.txt"
+
+cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$MVP_TARGET/docs/plans/T-000-plan.md.bak"
+printf '\nallowed_changes:\n- **\n' >>"$MVP_TARGET/docs/plans/T-000-plan.md"
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >/tmp/vibecoding-kit-plan-hash.out 2>&1; then
+  fail "plan-guard should reject locked plan changes"
+fi
+assert_contains "$(cat /tmp/vibecoding-kit-plan-hash.out)" "PLAN_GUARD_FAIL: locked plan changed"
+mv "$MVP_TARGET/docs/plans/T-000-plan.md.bak" "$MVP_TARGET/docs/plans/T-000-plan.md"
 
 bad_task="$MVP_TARGET/docs/tasks/T-999.md"
 printf '# T-999 Missing Sections\n' >"$bad_task"
