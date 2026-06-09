@@ -46,6 +46,12 @@ if ! rg -q '^## S-[0-9]{3} ' "$plan_file"; then
   exit 1
 fi
 
+duplicate_step="$(awk '/^## S-[0-9][0-9][0-9] / { if (++seen[$2] == 2) { print $2; exit } }' "$plan_file")"
+if [[ -n "$duplicate_step" ]]; then
+  echo "SPEC_LINT_FAIL: $plan_file duplicate step $duplicate_step" >&2
+  exit 1
+fi
+
 while IFS= read -r step; do
   block="$(awk -v step="$step" '
     $0 ~ "^## " step " " { in_step = 1; print; next }

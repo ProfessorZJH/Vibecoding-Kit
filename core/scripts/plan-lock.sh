@@ -17,7 +17,7 @@ plan="$(plan_file "$task")"
   exit 1
 }
 
-bash scripts/spec-lint.sh "$task" >/tmp/vibecoding-kit-spec-lint.out
+bash scripts/spec-lint.sh "$task" >/dev/null
 
 requirements_status="$(state_get requirements_status)"
 design_status="$(state_get design_status)"
