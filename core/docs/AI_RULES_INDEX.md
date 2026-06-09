@@ -9,6 +9,25 @@ documents and selected profiles.
 bash scripts/ai-preflight.sh T-xxx
 ```
 
+## Plan Engine
+
+When `require_plan_guard: true`, implementation requires:
+
+```bash
+bash scripts/spec-lint.sh T-xxx
+bash scripts/plan-guard.sh T-xxx S-xxx
+```
+
+Plan changes require:
+
+```txt
+PLAN_CHANGE_REQUIRED
+reason:
+requested_change:
+affected_files:
+suggested_plan_update:
+```
+
 ## Required Closeout
 
 ```bash
