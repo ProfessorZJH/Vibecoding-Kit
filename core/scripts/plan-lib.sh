@@ -68,6 +68,7 @@ changed_files() {
       else
         git diff --name-only
       fi
+      git diff --cached --name-only
       git ls-files --others --exclude-standard
     fi
   } 2>/dev/null | sed '/^$/d' | sort -u
