@@ -8,6 +8,14 @@ cd "$ROOT_DIR"
 task="${1:-}"
 step="${2:-}"
 
+if [[ -z "$task" ]]; then
+  task="$(state_get current_task)"
+fi
+
+if [[ -z "$step" ]]; then
+  step="$(state_get current_step)"
+fi
+
 [[ "$task" =~ ^T-[0-9]{3}$ ]] || {
   echo "PLAN_GUARD_FAIL: missing or invalid task id" >&2
   exit 2
@@ -32,13 +40,13 @@ fi
 
 current_task="$(state_get current_task)"
 if [[ "$current_task" != "$task" ]]; then
-  echo "PLAN_GUARD_FAIL: task is not current" >&2
+  echo "PLAN_GUARD_FAIL: task is not current (requested: $task, current: ${current_task:-none})" >&2
   exit 1
 fi
 
 current_step="$(state_get current_step)"
 if [[ "$current_step" != "$step" ]]; then
-  echo "PLAN_STEP_FAIL: step is not current" >&2
+  echo "PLAN_STEP_FAIL: step is not current (requested: $step, current: ${current_step:-none})" >&2
   exit 1
 fi
 
@@ -50,7 +58,11 @@ plan="$(plan_file "$task")"
 
 expected_hash="$(state_get plan_hash)"
 actual_hash="$(plan_hash "$plan")"
-if [[ -n "$expected_hash" && "$expected_hash" != "__PLAN_HASH__" && "$expected_hash" != "$actual_hash" ]]; then
+if [[ -z "$expected_hash" || "$expected_hash" == "__PLAN_HASH__" ]]; then
+  echo "PLAN_GUARD_FAIL: missing or invalid plan_hash" >&2
+  exit 1
+fi
+if [[ "$expected_hash" != "$actual_hash" ]]; then
   echo "PLAN_GUARD_FAIL: locked plan changed" >&2
   exit 1
 fi

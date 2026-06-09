@@ -60,15 +60,26 @@ plan_hash() {
   awk '!/^status:[[:space:]]/ { print }' "$file" | sha256sum | awk '{ print $1 }'
 }
 
+changed_paths_from_diff() {
+  awk -F '\t' '
+    $1 ~ /^[RC][0-9]+$/ {
+      if ($2 != "") print $2
+      if ($3 != "") print $3
+      next
+    }
+    NF >= 2 { print $2 }
+  '
+}
+
 changed_files() {
   {
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
       if git rev-parse --verify HEAD >/dev/null 2>&1; then
-        git diff --name-only HEAD
+        git diff --name-status -M -C HEAD | changed_paths_from_diff
       else
-        git diff --name-only
+        git diff --name-status -M -C | changed_paths_from_diff
       fi
-      git diff --cached --name-only
+      git diff --cached --name-status -M -C | changed_paths_from_diff
       git ls-files --others --exclude-standard
     fi
   } 2>/dev/null | sed '/^$/d' | sort -u

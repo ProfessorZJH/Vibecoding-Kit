@@ -38,12 +38,12 @@ current_step="$(state_get current_step)"
 plan_status="$(state_get plan_status)"
 
 [[ "$current_task" == "$task" ]] || {
-  echo "PLAN_STEP_FAIL: task is not current" >&2
+  echo "PLAN_STEP_FAIL: task is not current (requested: $task, current: ${current_task:-none})" >&2
   exit 1
 }
 
 [[ "$current_step" == "$step" ]] || {
-  echo "PLAN_STEP_FAIL: step is not current" >&2
+  echo "PLAN_STEP_FAIL: step is not current (requested: $step, current: ${current_step:-none})" >&2
   exit 1
 }
 
@@ -60,7 +60,7 @@ case "$action" in
     echo "current_step: $step"
     ;;
   --complete)
-    bash scripts/plan-guard.sh "$task" "$step" >/tmp/vibecoding-kit-plan-guard.out
+    bash scripts/plan-guard.sh "$task" "$step" >/dev/null
     next="$(next_step_after "$plan" "$step")"
     if [[ -n "$next" ]]; then
       state_set current_step "$next"

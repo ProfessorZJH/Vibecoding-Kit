@@ -74,6 +74,21 @@ copy_tree() {
   cp -R "$src"/. "$dest"/
 }
 
+plan_hash() {
+  local file="$1"
+  awk '!/^status:[[:space:]]/ { print }' "$file" | sha256sum | awk '{ print $1 }'
+}
+
+replace_initial_plan_hash() {
+  local state_file="$target/docs/AI_STATE.yml"
+  local plan_file="$target/docs/plans/T-000-plan.md"
+  local hash
+
+  [[ -f "$state_file" && -f "$plan_file" ]] || return 0
+  hash="$(plan_hash "$plan_file")"
+  sed -i "s/__PLAN_HASH__/${hash}/g" "$state_file"
+}
+
 replace_project_name() {
   find "$target" -type f \
     ! -path '*/.git/*' \
@@ -188,6 +203,8 @@ for ci in "${cis[@]}"; do
       ;;
   esac
 done
+
+replace_initial_plan_hash
 
 find "$target/scripts" -type f -name '*.sh' -exec chmod +x {} +
 

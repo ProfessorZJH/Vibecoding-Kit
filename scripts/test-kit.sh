@@ -96,6 +96,7 @@ assert_file "$MVP_TARGET/docs/plans/T-000-plan.md"
 assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "require_plan_guard: true"
 assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "plan_status: locked"
 assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "current_step: S-001"
+assert_not_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "__PLAN_HASH__"
 assert_file "$MVP_TARGET/reports/vibecoding-init.md"
 assert_contains "$(cat "$MVP_TARGET/reports/vibecoding-init.md")" "bash scripts/ai-preflight.sh T-000"
 assert_file "$MVP_TARGET/docs/DDD_STYLE.md"
@@ -128,6 +129,9 @@ assert_contains "$mvp_spec_lint" "SPEC_LINT_PASS"
 
 mvp_plan_guard="$(cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001)"
 assert_contains "$mvp_plan_guard" "PLAN_GUARD_PASS"
+
+mvp_plan_guard_no_args="$(cd "$MVP_TARGET" && bash scripts/plan-guard.sh)"
+assert_contains "$mvp_plan_guard_no_args" "PLAN_GUARD_PASS"
 
 cp "$MVP_TARGET/docs/AI_STATE.yml" "$TMP_DIR/AI_STATE.yml.known-good"
 cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$TMP_DIR/T-000-plan.md.known-good"
@@ -168,6 +172,16 @@ if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-999) >"$TMP_DIR/plan-
   fail "plan-guard should reject wrong current step"
 fi
 assert_contains "$(cat "$TMP_DIR/plan-step.out")" "PLAN_STEP_FAIL: step is not current"
+assert_contains "$(cat "$TMP_DIR/plan-step.out")" "requested: S-999"
+assert_contains "$(cat "$TMP_DIR/plan-step.out")" "current: S-001"
+
+restore_plan_fixture
+if (cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-999 --start) >"$TMP_DIR/plan-step-command.out" 2>&1; then
+  fail "plan-step should reject wrong current step"
+fi
+assert_contains "$(cat "$TMP_DIR/plan-step-command.out")" "PLAN_STEP_FAIL: step is not current"
+assert_contains "$(cat "$TMP_DIR/plan-step-command.out")" "requested: S-999"
+assert_contains "$(cat "$TMP_DIR/plan-step-command.out")" "current: S-001"
 
 restore_plan_fixture
 sed -i '0,/^- \*\*$/s//- docs\/AI_STATE.yml\n- docs\/plans\/T-000-plan.md/' "$MVP_TARGET/docs/plans/T-000-plan.md"
@@ -186,6 +200,30 @@ if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-
 fi
 assert_contains "$(cat "$TMP_DIR/plan-hash.out")" "PLAN_GUARD_FAIL: locked plan changed"
 restore_plan_fixture
+
+restore_plan_fixture
+set_ai_state_value "$MVP_TARGET/docs/AI_STATE.yml" "plan_hash" "__PLAN_HASH__"
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-placeholder-hash.out" 2>&1; then
+  fail "plan-guard should reject placeholder plan hash"
+fi
+assert_contains "$(cat "$TMP_DIR/plan-placeholder-hash.out")" "PLAN_GUARD_FAIL: missing or invalid plan_hash"
+restore_plan_fixture
+
+RENAME_TARGET="$TMP_DIR/rename-project"
+mkdir -p "$RENAME_TARGET/old"
+git -C "$RENAME_TARGET" init >/dev/null
+printf 'baseline\n' >"$RENAME_TARGET/old/legacy.txt"
+git -C "$RENAME_TARGET" add old/legacy.txt
+git -C "$RENAME_TARGET" \
+  -c user.name="Vibecoding Kit Test" \
+  -c user.email="vibecoding-kit-test@example.invalid" \
+  -c commit.gpgsign=false \
+  commit -m "baseline" >/dev/null
+mkdir -p "$RENAME_TARGET/allowed"
+git -C "$RENAME_TARGET" mv old/legacy.txt allowed/new.txt
+rename_changes="$(cd "$RENAME_TARGET" && . "$MVP_TARGET/scripts/plan-lib.sh" && changed_files)"
+assert_contains "$rename_changes" "old/legacy.txt"
+assert_contains "$rename_changes" "allowed/new.txt"
 
 bad_task="$MVP_TARGET/docs/tasks/T-999.md"
 printf '# T-999 Missing Sections\n' >"$bad_task"
