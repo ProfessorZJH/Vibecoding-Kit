@@ -45,6 +45,24 @@ assert_count() {
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
+set_ai_state_value() {
+  local file="$1"
+  local key="$2"
+  local value="$3"
+  local tmp="$TMP_DIR/AI_STATE.${key}.tmp"
+  awk -v key="$key" -v value="$value" '
+    BEGIN { done = 0 }
+    $0 ~ "^" key ":" { print key ": " value; done = 1; next }
+    { print }
+    END { if (done == 0) print key ": " value }
+  ' "$file" >"$tmp"
+  mv "$tmp" "$file"
+}
+
+plan_hash() {
+  awk '!/^status:[[:space:]]/ { print }' "$1" | sha256sum | awk '{ print $1 }'
+}
+
 MVP_TARGET="$TMP_DIR/mvp-project"
 FULL_TARGET="$TMP_DIR/full-project"
 XFG_TARGET="$TMP_DIR/xfg-project"
@@ -77,6 +95,7 @@ assert_file "$MVP_TARGET/docs/plans/PLAN_TEMPLATE.md"
 assert_file "$MVP_TARGET/docs/plans/T-000-plan.md"
 assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "require_plan_guard: true"
 assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "plan_status: locked"
+assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "current_step: S-001"
 assert_file "$MVP_TARGET/reports/vibecoding-init.md"
 assert_contains "$(cat "$MVP_TARGET/reports/vibecoding-init.md")" "bash scripts/ai-preflight.sh T-000"
 assert_file "$MVP_TARGET/docs/DDD_STYLE.md"
@@ -110,49 +129,73 @@ assert_contains "$mvp_spec_lint" "SPEC_LINT_PASS"
 mvp_plan_guard="$(cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001)"
 assert_contains "$mvp_plan_guard" "PLAN_GUARD_PASS"
 
+cp "$MVP_TARGET/docs/AI_STATE.yml" "$TMP_DIR/AI_STATE.yml.known-good"
+cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$TMP_DIR/T-000-plan.md.known-good"
+
 mvp_plan_start="$(cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --start)"
 assert_contains "$mvp_plan_start" "PLAN_STEP_START"
 
 mvp_plan_complete="$(cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --complete)"
 assert_contains "$mvp_plan_complete" "PLAN_STEP_COMPLETE"
 
-cp "$MVP_TARGET/docs/AI_STATE.yml" "$TMP_DIR/AI_STATE.yml.bak"
+restore_plan_fixture() {
+  cp "$TMP_DIR/AI_STATE.yml.known-good" "$MVP_TARGET/docs/AI_STATE.yml"
+  cp "$TMP_DIR/T-000-plan.md.known-good" "$MVP_TARGET/docs/plans/T-000-plan.md"
+  rm -f "$MVP_TARGET/unplanned.txt"
+  assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "plan_status: locked"
+  assert_contains "$(cat "$MVP_TARGET/docs/AI_STATE.yml")" "current_step: S-001"
+}
+
+restore_plan_fixture
+if [[ -n "$(git -C "$MVP_TARGET" status --porcelain)" ]]; then
+  git -C "$MVP_TARGET" add .
+  git -C "$MVP_TARGET" \
+    -c user.name="Vibecoding Kit Test" \
+    -c user.email="vibecoding-kit-test@example.invalid" \
+    -c commit.gpgsign=false \
+    commit -m "test fixture baseline" >/dev/null
+fi
+
+restore_plan_fixture
 sed -i 's/plan_status: locked/plan_status: draft/' "$MVP_TARGET/docs/AI_STATE.yml"
 if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-unlocked.out" 2>&1; then
   fail "plan-guard should reject unlocked plan"
 fi
 assert_contains "$(cat "$TMP_DIR/plan-unlocked.out")" "PLAN_GUARD_FAIL: plan not locked"
-mv "$TMP_DIR/AI_STATE.yml.bak" "$MVP_TARGET/docs/AI_STATE.yml"
 
+restore_plan_fixture
 if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-999) >"$TMP_DIR/plan-step.out" 2>&1; then
   fail "plan-guard should reject wrong current step"
 fi
 assert_contains "$(cat "$TMP_DIR/plan-step.out")" "PLAN_STEP_FAIL: step is not current"
 
+restore_plan_fixture
+sed -i '0,/^- \*\*$/s//- docs\/AI_STATE.yml\n- docs\/plans\/T-000-plan.md/' "$MVP_TARGET/docs/plans/T-000-plan.md"
+set_ai_state_value "$MVP_TARGET/docs/AI_STATE.yml" "plan_hash" "$(plan_hash "$MVP_TARGET/docs/plans/T-000-plan.md")"
 printf 'drift\n' >"$MVP_TARGET/unplanned.txt"
 if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-drift.out" 2>&1; then
   fail "plan-guard should reject files outside current step allowlist"
 fi
 assert_contains "$(cat "$TMP_DIR/plan-drift.out")" "PLAN_GUARD_FAIL: unauthorized file"
-rm -f "$MVP_TARGET/unplanned.txt"
+restore_plan_fixture
 
-cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$TMP_DIR/T-000-plan.md.bak"
+restore_plan_fixture
 printf '\nallowed_changes:\n- **\n' >>"$MVP_TARGET/docs/plans/T-000-plan.md"
 if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-hash.out" 2>&1; then
   fail "plan-guard should reject locked plan changes"
 fi
 assert_contains "$(cat "$TMP_DIR/plan-hash.out")" "PLAN_GUARD_FAIL: locked plan changed"
-mv "$TMP_DIR/T-000-plan.md.bak" "$MVP_TARGET/docs/plans/T-000-plan.md"
+restore_plan_fixture
 
 bad_task="$MVP_TARGET/docs/tasks/T-999.md"
 printf '# T-999 Missing Sections\n' >"$bad_task"
-if (cd "$MVP_TARGET" && bash scripts/task-card-lint.sh T-999) >/tmp/vibecoding-kit-task-card.out 2>&1; then
+if (cd "$MVP_TARGET" && bash scripts/task-card-lint.sh T-999) >"$TMP_DIR/task-card.out" 2>&1; then
   fail "task-card-lint should reject incomplete task card"
 fi
 rm -f "$bad_task"
 
 printf 'api_key=THIS_IS_A_FAKE_SECRET_VALUE_12345\n' >"$MVP_TARGET/leaked.env"
-if (cd "$MVP_TARGET" && bash scripts/secrets-guard.sh) >/tmp/vibecoding-kit-secrets.out 2>&1; then
+if (cd "$MVP_TARGET" && bash scripts/secrets-guard.sh) >"$TMP_DIR/secrets.out" 2>&1; then
   fail "secrets-guard should reject fake secret content"
 fi
 rm -f "$MVP_TARGET/leaked.env"
