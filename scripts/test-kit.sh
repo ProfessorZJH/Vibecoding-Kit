@@ -116,33 +116,33 @@ assert_contains "$mvp_plan_start" "PLAN_STEP_START"
 mvp_plan_complete="$(cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --complete)"
 assert_contains "$mvp_plan_complete" "PLAN_STEP_COMPLETE"
 
-cp "$MVP_TARGET/docs/AI_STATE.yml" "$MVP_TARGET/docs/AI_STATE.yml.bak"
+cp "$MVP_TARGET/docs/AI_STATE.yml" "$TMP_DIR/AI_STATE.yml.bak"
 sed -i 's/plan_status: locked/plan_status: draft/' "$MVP_TARGET/docs/AI_STATE.yml"
-if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >/tmp/vibecoding-kit-plan-unlocked.out 2>&1; then
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-unlocked.out" 2>&1; then
   fail "plan-guard should reject unlocked plan"
 fi
-assert_contains "$(cat /tmp/vibecoding-kit-plan-unlocked.out)" "PLAN_GUARD_FAIL: plan not locked"
-mv "$MVP_TARGET/docs/AI_STATE.yml.bak" "$MVP_TARGET/docs/AI_STATE.yml"
+assert_contains "$(cat "$TMP_DIR/plan-unlocked.out")" "PLAN_GUARD_FAIL: plan not locked"
+mv "$TMP_DIR/AI_STATE.yml.bak" "$MVP_TARGET/docs/AI_STATE.yml"
 
-if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-999) >/tmp/vibecoding-kit-plan-step.out 2>&1; then
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-999) >"$TMP_DIR/plan-step.out" 2>&1; then
   fail "plan-guard should reject wrong current step"
 fi
-assert_contains "$(cat /tmp/vibecoding-kit-plan-step.out)" "PLAN_STEP_FAIL: step is not current"
+assert_contains "$(cat "$TMP_DIR/plan-step.out")" "PLAN_STEP_FAIL: step is not current"
 
 printf 'drift\n' >"$MVP_TARGET/unplanned.txt"
-if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >/tmp/vibecoding-kit-plan-drift.out 2>&1; then
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-drift.out" 2>&1; then
   fail "plan-guard should reject files outside current step allowlist"
 fi
-assert_contains "$(cat /tmp/vibecoding-kit-plan-drift.out)" "PLAN_GUARD_FAIL: unauthorized file"
+assert_contains "$(cat "$TMP_DIR/plan-drift.out")" "PLAN_GUARD_FAIL: unauthorized file"
 rm -f "$MVP_TARGET/unplanned.txt"
 
-cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$MVP_TARGET/docs/plans/T-000-plan.md.bak"
+cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$TMP_DIR/T-000-plan.md.bak"
 printf '\nallowed_changes:\n- **\n' >>"$MVP_TARGET/docs/plans/T-000-plan.md"
-if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >/tmp/vibecoding-kit-plan-hash.out 2>&1; then
+if (cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001) >"$TMP_DIR/plan-hash.out" 2>&1; then
   fail "plan-guard should reject locked plan changes"
 fi
-assert_contains "$(cat /tmp/vibecoding-kit-plan-hash.out)" "PLAN_GUARD_FAIL: locked plan changed"
-mv "$MVP_TARGET/docs/plans/T-000-plan.md.bak" "$MVP_TARGET/docs/plans/T-000-plan.md"
+assert_contains "$(cat "$TMP_DIR/plan-hash.out")" "PLAN_GUARD_FAIL: locked plan changed"
+mv "$TMP_DIR/T-000-plan.md.bak" "$MVP_TARGET/docs/plans/T-000-plan.md"
 
 bad_task="$MVP_TARGET/docs/tasks/T-999.md"
 printf '# T-999 Missing Sections\n' >"$bad_task"
