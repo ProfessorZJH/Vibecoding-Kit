@@ -1,0 +1,6 @@
+DEMO_STEP unauthorized_change_blocked
+PLAN_GUARD_FAIL: unauthorized file
+src/main/resources/application.yml
+DEMO_STEP relocked_after_plan_update
+DEMO_STEP closeout_report_written
+DEMO_PASS
