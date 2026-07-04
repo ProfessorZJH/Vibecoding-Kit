@@ -120,6 +120,7 @@ assert_contains "$mvp_preflight" "current_task: T-000"
 
 mvp_drift="$(cd "$MVP_TARGET" && bash scripts/drift-guard.sh)"
 assert_contains "$mvp_drift" "DRIFT_GUARD_PASS"
+assert_contains "$mvp_drift" "PLAN_GUARD_PASS"
 assert_contains "$mvp_drift" "TASK_CARD_LINT_PASS"
 assert_contains "$mvp_drift" "SECRETS_GUARD_PASS"
 assert_count "$mvp_drift" "SECRETS_GUARD_PASS" "1"
@@ -225,6 +226,22 @@ rename_changes="$(cd "$RENAME_TARGET" && . "$MVP_TARGET/scripts/plan-lib.sh" && 
 assert_contains "$rename_changes" "old/legacy.txt"
 assert_contains "$rename_changes" "allowed/new.txt"
 
+COPY_TARGET="$TMP_DIR/copy-project"
+mkdir -p "$COPY_TARGET"
+git -C "$COPY_TARGET" init >/dev/null
+printf 'baseline\n' >"$COPY_TARGET/original.txt"
+git -C "$COPY_TARGET" add original.txt
+git -C "$COPY_TARGET" \
+  -c user.name="Vibecoding Kit Test" \
+  -c user.email="vibecoding-kit-test@example.invalid" \
+  -c commit.gpgsign=false \
+  commit -m "baseline" >/dev/null
+cp "$COPY_TARGET/original.txt" "$COPY_TARGET/copied.txt"
+git -C "$COPY_TARGET" add copied.txt
+copy_changes="$(cd "$COPY_TARGET" && . "$MVP_TARGET/scripts/plan-lib.sh" && changed_files)"
+assert_contains "$copy_changes" "original.txt"
+assert_contains "$copy_changes" "copied.txt"
+
 bad_task="$MVP_TARGET/docs/tasks/T-999.md"
 printf '# T-999 Missing Sections\n' >"$bad_task"
 if (cd "$MVP_TARGET" && bash scripts/task-card-lint.sh T-999) >"$TMP_DIR/task-card.out" 2>&1; then
@@ -240,8 +257,10 @@ rm -f "$MVP_TARGET/leaked.env"
 
 mvp_closeout="$(cd "$MVP_TARGET" && bash scripts/task-closeout.sh T-000 --no-tests --write-report)"
 assert_contains "$mvp_closeout" "CLOSEOUT"
+assert_contains "$mvp_closeout" "plan_guard: PLAN_GUARD_PASS S-001"
 assert_contains "$mvp_closeout" "closeout_report: reports/ai-closeout/T-000.md"
 assert_file "$MVP_TARGET/reports/ai-closeout/T-000.md"
+assert_contains "$(cat "$MVP_TARGET/reports/ai-closeout/T-000.md")" "- plan_guard: PLAN_GUARD_PASS S-001"
 
 bash installer/init.sh \
   --target "$XFG_TARGET" \
@@ -309,12 +328,18 @@ assert_executable "$FULL_TARGET/scripts/api-contract-lint.sh"
 assert_executable "$FULL_TARGET/scripts/api-contract-guard.sh"
 assert_executable "$FULL_TARGET/scripts/java-spring-guard.sh"
 assert_executable "$FULL_TARGET/scripts/vue-guard.sh"
+assert_contains "$(cat "$FULL_TARGET/scripts/test-ai-guards.sh")" "scripts/spec-lint.sh"
+assert_contains "$(cat "$FULL_TARGET/scripts/test-ai-guards.sh")" "scripts/plan-lock.sh"
+assert_contains "$(cat "$FULL_TARGET/scripts/test-ai-guards.sh")" "scripts/plan-guard.sh"
+assert_contains "$(cat "$FULL_TARGET/scripts/test-ai-guards.sh")" "scripts/plan-step.sh"
+assert_contains "$(cat "$FULL_TARGET/scripts/test-ai-guards.sh")" "plan_guard:"
 
 full_test="$(cd "$FULL_TARGET" && bash scripts/test-ai-guards.sh)"
 assert_contains "$full_test" "AI_GUARD_TESTS_PASS"
 
 full_drift="$(cd "$FULL_TARGET" && bash scripts/drift-guard.sh)"
 assert_contains "$full_drift" "API_CONTRACT_LINT_PASS"
+assert_contains "$full_drift" "PLAN_GUARD_PASS"
 assert_count "$full_drift" "SECRETS_GUARD_PASS" "1"
 
 full_api_lint="$(cd "$FULL_TARGET" && bash scripts/api-contract-lint.sh T-000)"

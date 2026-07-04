@@ -75,11 +75,11 @@ changed_files() {
   {
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
       if git rev-parse --verify HEAD >/dev/null 2>&1; then
-        git diff --name-status -M -C HEAD | changed_paths_from_diff
+        git diff --name-status -M -C --find-copies-harder HEAD | changed_paths_from_diff
       else
-        git diff --name-status -M -C | changed_paths_from_diff
+        git diff --name-status -M -C --find-copies-harder | changed_paths_from_diff
       fi
-      git diff --cached --name-status -M -C | changed_paths_from_diff
+      git diff --cached --name-status -M -C --find-copies-harder | changed_paths_from_diff
       git ls-files --others --exclude-standard
     fi
   } 2>/dev/null | sed '/^$/d' | sort -u

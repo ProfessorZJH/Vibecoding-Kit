@@ -101,8 +101,20 @@ if [[ "$no_tests" == false ]]; then
   fi
 fi
 
-bash scripts/drift-guard.sh >/tmp/vibecoding-kit-drift.out
+bash scripts/drift-guard.sh >/dev/null
 drift_result="DRIFT_GUARD_PASS"
+
+plan_result="not_required"
+require_plan_guard="$(awk -F: '$1 == "require_plan_guard" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' docs/AI_STATE.yml 2>/dev/null || true)"
+current_step="$(awk -F: '$1 == "current_step" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' docs/AI_STATE.yml 2>/dev/null || true)"
+if [[ "$require_plan_guard" == "true" ]]; then
+  if [[ "$current_step" =~ ^S-[0-9]{3}$ ]]; then
+    bash scripts/plan-guard.sh "$task" "$current_step" >/dev/null
+    plan_result="PLAN_GUARD_PASS $current_step"
+  else
+    plan_result="PLAN_GUARD_FAIL missing_current_step"
+  fi
+fi
 
 git_checkpoint="COMMIT_REQUIRED"
 if [[ -z "$changed_files" && "$has_head" == true ]]; then
@@ -170,6 +182,7 @@ ${local_artifacts:-none}
 
 - tests: $tests_result
 - drift_guard: $drift_result
+- plan_guard: $plan_result
 
 ## Checkpoints
 
@@ -197,6 +210,7 @@ local_artifacts:
 ${local_artifacts:-  none}
 tests_run: $tests_result
 drift_guard: $drift_result
+plan_guard: $plan_result
 git_checkpoint: $git_checkpoint
 push_checkpoint: $push_checkpoint
 closeout_report: $closeout_report
@@ -205,4 +219,5 @@ EOF
 [[ -z "$unauthorized" ]] || exit 1
 [[ -z "$sensitive_files" ]] || exit 1
 [[ -z "$local_artifacts" ]] || exit 1
+[[ "$plan_result" != PLAN_GUARD_FAIL* ]] || exit 1
 [[ "$tests_result" != "NO_TEST_COMMAND" ]] || exit 1
