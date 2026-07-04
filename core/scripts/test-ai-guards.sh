@@ -13,6 +13,28 @@ assert_contains() {
   [[ "$1" == *"$2"* ]] || fail "expected output to contain: $2"
 }
 
+state_value() {
+  local key="$1"
+  awk -F: -v key="$key" '
+    $1 == key {
+      v = substr($0, index($0, ":") + 1)
+      gsub(/^[ \t]+|[ \t]+$/, "", v)
+      print v
+      exit
+    }
+  ' "$2" 2>/dev/null || true
+}
+
+template_plan_hash="$(state_value plan_hash docs/AI_STATE.yml)"
+template_source_commit="$(state_value source_commit docs/AI_RULES_VERSION.yml)"
+if [[ "$template_plan_hash" == "__PLAN_HASH__" && "$template_source_commit" == "__SOURCE_COMMIT__" ]]; then
+  state_backup="$(mktemp)"
+  cp docs/AI_STATE.yml "$state_backup"
+  trap 'cp "$state_backup" docs/AI_STATE.yml; rm -f "$state_backup"' EXIT
+  computed_plan_hash="$(awk '!/^status:[[:space:]]/ { print }' docs/plans/T-000-plan.md | sha256sum | awk '{ print $1 }')"
+  sed -i "s/__PLAN_HASH__/${computed_plan_hash}/g" docs/AI_STATE.yml
+fi
+
 for file in scripts/ai-preflight.sh scripts/drift-guard.sh scripts/task-closeout.sh scripts/install-git-hooks.sh scripts/task-card-lint.sh scripts/secrets-guard.sh scripts/spec-lint.sh scripts/plan-lock.sh scripts/plan-guard.sh scripts/plan-step.sh; do
   [[ -x "$file" ]] || fail "$file missing or not executable"
 done

@@ -13,6 +13,32 @@ task="${1:-}"
 task_file="docs/tasks/${task}.md"
 plan_file="docs/plans/${task}-plan.md"
 
+status_value() {
+  local file="$1"
+  awk -F: '
+    $1 == "status" {
+      v = substr($0, index($0, ":") + 1)
+      gsub(/^[ \t]+|[ \t]+$/, "", v)
+      print v
+      exit
+    }
+  ' "$file"
+}
+
+validate_status() {
+  local label="$1"
+  local value="$2"
+  shift 2
+  local allowed
+
+  for allowed in "$@"; do
+    [[ "$value" == "$allowed" ]] && return 0
+  done
+
+  echo "SPEC_LINT_FAIL: unsupported $label status ${value:-missing}" >&2
+  exit 1
+}
+
 [[ -f "$task_file" ]] || {
   echo "SPEC_LINT_FAIL: missing $task_file" >&2
   exit 1
@@ -24,15 +50,23 @@ plan_file="docs/plans/${task}-plan.md"
 }
 
 if [[ "$task" != "T-000" ]]; then
-  [[ -f "docs/specs/${task}-requirements.md" ]] || {
-    echo "SPEC_LINT_FAIL: missing docs/specs/${task}-requirements.md" >&2
+  requirements_file="docs/specs/${task}-requirements.md"
+  design_file="docs/designs/${task}-design.md"
+
+  [[ -f "$requirements_file" ]] || {
+    echo "SPEC_LINT_FAIL: missing $requirements_file" >&2
     exit 1
   }
-  [[ -f "docs/designs/${task}-design.md" ]] || {
-    echo "SPEC_LINT_FAIL: missing docs/designs/${task}-design.md" >&2
+  [[ -f "$design_file" ]] || {
+    echo "SPEC_LINT_FAIL: missing $design_file" >&2
     exit 1
   }
+
+  validate_status "requirements" "$(status_value "$requirements_file")" draft approved change_required
+  validate_status "design" "$(status_value "$design_file")" draft approved change_required
 fi
+
+validate_status "plan" "$(status_value "$plan_file")" draft locked change_required
 
 for section in "## Goal" "## Background" "## Plan Contract" "## Allowed Changes" "## Forbidden Changes" "## Required Work" "## Forbidden Actions" "## Test Requirements" "## Completion Criteria" "## Risk"; do
   if ! rg -q "^${section}$" "$task_file"; then
@@ -65,6 +99,16 @@ while IFS= read -r step; do
       exit 1
     fi
   done
+
+  step_status="$(printf '%s\n' "$block" | awk -F: '
+    $1 == "status" {
+      v = substr($0, index($0, ":") + 1)
+      gsub(/^[ \t]+|[ \t]+$/, "", v)
+      print v
+      exit
+    }
+  ')"
+  validate_status "step" "$step_status" pending in_progress completed blocked
 done < <(awk '/^## S-[0-9][0-9][0-9] / { print $2 }' "$plan_file")
 
 echo "SPEC_LINT_PASS"

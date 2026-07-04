@@ -128,6 +128,50 @@ assert_count "$mvp_drift" "SECRETS_GUARD_PASS" "1"
 mvp_spec_lint="$(cd "$MVP_TARGET" && bash scripts/spec-lint.sh T-000)"
 assert_contains "$mvp_spec_lint" "SPEC_LINT_PASS"
 
+cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$TMP_DIR/T-000-plan.status-good.md"
+sed -i '0,/^status: locked$/s//status: banana/' "$MVP_TARGET/docs/plans/T-000-plan.md"
+if (cd "$MVP_TARGET" && bash scripts/spec-lint.sh T-000) >"$TMP_DIR/spec-lint-plan-status.out" 2>&1; then
+  fail "spec-lint should reject unsupported plan status"
+fi
+assert_contains "$(cat "$TMP_DIR/spec-lint-plan-status.out")" "SPEC_LINT_FAIL: unsupported plan status"
+cp "$TMP_DIR/T-000-plan.status-good.md" "$MVP_TARGET/docs/plans/T-000-plan.md"
+
+sed -i '0,/^status: pending$/s//status: banana/' "$MVP_TARGET/docs/plans/T-000-plan.md"
+if (cd "$MVP_TARGET" && bash scripts/spec-lint.sh T-000) >"$TMP_DIR/spec-lint-step-status.out" 2>&1; then
+  fail "spec-lint should reject unsupported step status"
+fi
+assert_contains "$(cat "$TMP_DIR/spec-lint-step-status.out")" "SPEC_LINT_FAIL: unsupported step status"
+cp "$TMP_DIR/T-000-plan.status-good.md" "$MVP_TARGET/docs/plans/T-000-plan.md"
+
+cp "$MVP_TARGET/docs/tasks/T-000.md" "$MVP_TARGET/docs/tasks/T-001.md"
+sed -i 's/T-000/T-001/g' "$MVP_TARGET/docs/tasks/T-001.md"
+cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$MVP_TARGET/docs/plans/T-001-plan.md"
+sed -i 's/T-000/T-001/g' "$MVP_TARGET/docs/plans/T-001-plan.md"
+cp "$MVP_TARGET/docs/specs/REQUIREMENTS_TEMPLATE.md" "$MVP_TARGET/docs/specs/T-001-requirements.md"
+sed -i 's/T-xxx/T-001/g; s/status: draft/status: approved/' "$MVP_TARGET/docs/specs/T-001-requirements.md"
+cp "$MVP_TARGET/docs/designs/DESIGN_TEMPLATE.md" "$MVP_TARGET/docs/designs/T-001-design.md"
+sed -i 's/T-xxx/T-001/g; s/status: draft/status: approved/' "$MVP_TARGET/docs/designs/T-001-design.md"
+t001_spec_lint="$(cd "$MVP_TARGET" && bash scripts/spec-lint.sh T-001)"
+assert_contains "$t001_spec_lint" "SPEC_LINT_PASS"
+
+sed -i 's/status: approved/status: banana/' "$MVP_TARGET/docs/specs/T-001-requirements.md"
+if (cd "$MVP_TARGET" && bash scripts/spec-lint.sh T-001) >"$TMP_DIR/spec-lint-requirements-status.out" 2>&1; then
+  fail "spec-lint should reject unsupported requirements status"
+fi
+assert_contains "$(cat "$TMP_DIR/spec-lint-requirements-status.out")" "SPEC_LINT_FAIL: unsupported requirements status"
+sed -i 's/status: banana/status: approved/' "$MVP_TARGET/docs/specs/T-001-requirements.md"
+
+sed -i 's/status: approved/status: banana/' "$MVP_TARGET/docs/designs/T-001-design.md"
+if (cd "$MVP_TARGET" && bash scripts/spec-lint.sh T-001) >"$TMP_DIR/spec-lint-design-status.out" 2>&1; then
+  fail "spec-lint should reject unsupported design status"
+fi
+assert_contains "$(cat "$TMP_DIR/spec-lint-design-status.out")" "SPEC_LINT_FAIL: unsupported design status"
+rm -f \
+  "$MVP_TARGET/docs/tasks/T-001.md" \
+  "$MVP_TARGET/docs/plans/T-001-plan.md" \
+  "$MVP_TARGET/docs/specs/T-001-requirements.md" \
+  "$MVP_TARGET/docs/designs/T-001-design.md"
+
 mvp_plan_guard="$(cd "$MVP_TARGET" && bash scripts/plan-guard.sh T-000 S-001)"
 assert_contains "$mvp_plan_guard" "PLAN_GUARD_PASS"
 
@@ -139,6 +183,18 @@ cp "$MVP_TARGET/docs/plans/T-000-plan.md" "$TMP_DIR/T-000-plan.md.known-good"
 
 mvp_plan_start="$(cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --start)"
 assert_contains "$mvp_plan_start" "PLAN_STEP_START"
+
+if (cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --complete) >"$TMP_DIR/plan-step-uncommitted.out" 2>&1; then
+  fail "plan-step should reject required step completion without commit checkpoint"
+fi
+assert_contains "$(cat "$TMP_DIR/plan-step-uncommitted.out")" "PLAN_STEP_FAIL: commit required"
+
+git -C "$MVP_TARGET" add .
+git -C "$MVP_TARGET" \
+  -c user.name="Vibecoding Kit Test" \
+  -c user.email="vibecoding-kit-test@example.invalid" \
+  -c commit.gpgsign=false \
+  commit -m "T-000: verify initialized kit" >/dev/null
 
 mvp_plan_complete="$(cd "$MVP_TARGET" && bash scripts/plan-step.sh T-000 S-001 --complete)"
 assert_contains "$mvp_plan_complete" "PLAN_STEP_COMPLETE"

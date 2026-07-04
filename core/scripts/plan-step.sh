@@ -52,6 +52,46 @@ plan_status="$(state_get plan_status)"
   exit 1
 }
 
+step_requires_commit() {
+  local rule
+
+  [[ "$(state_get require_step_commit)" == "true" ]] && return 0
+
+  while IFS= read -r rule; do
+    [[ "$rule" == "required" ]] && return 0
+  done < <(step_field "$plan" "$step" "commit")
+
+  return 1
+}
+
+enforce_commit_checkpoint() {
+  local changes
+  local latest_subject
+
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "PLAN_STEP_FAIL: commit required (not_git_repository)" >&2
+    exit 1
+  fi
+
+  if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+    echo "PLAN_STEP_FAIL: commit required (missing_commit_checkpoint)" >&2
+    exit 1
+  fi
+
+  changes="$(changed_files)"
+  if [[ -n "$changes" ]]; then
+    echo "PLAN_STEP_FAIL: commit required (uncommitted_changes)" >&2
+    printf '%s\n' "$changes" >&2
+    exit 1
+  fi
+
+  latest_subject="$(git log -1 --pretty=%s)"
+  if [[ "$latest_subject" != "$task:"* ]]; then
+    echo "PLAN_STEP_FAIL: commit required (latest_commit_not_for_${task})" >&2
+    exit 1
+  fi
+}
+
 case "$action" in
   --start)
     state_set workflow_status implementation
@@ -61,6 +101,9 @@ case "$action" in
     ;;
   --complete)
     bash scripts/plan-guard.sh "$task" "$step" >/dev/null
+    if step_requires_commit; then
+      enforce_commit_checkpoint
+    fi
     next="$(next_step_after "$plan" "$step")"
     if [[ -n "$next" ]]; then
       state_set current_step "$next"
