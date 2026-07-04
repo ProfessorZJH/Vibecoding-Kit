@@ -14,3 +14,7 @@ Claude Code should use `CLAUDE.md`, `AGENTS.md`, and
 
 If a Claude Code todo or sub-agent result conflicts with the task card, update
 the task card first or stop as blocked.
+
+Before implementation, convert the tool's native plan into the locked plan engine contract.
+Native todos, modes, and plan panes are scratch state; the portable contract is
+`docs/plans/T-xxx-plan.md` plus `docs/AI_STATE.yml`.

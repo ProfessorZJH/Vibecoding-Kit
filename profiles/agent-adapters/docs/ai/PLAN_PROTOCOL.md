@@ -23,6 +23,26 @@ planning features, but the repository files are the source of truth.
 4. If the native plan conflicts with the task card, follow the task card.
 5. For API work, update `docs/API_SPEC.md` before implementation.
 
+## Plan Engine
+
+When `require_plan_guard: true`, native planning output must be converted into:
+
+- `docs/specs/T-xxx-requirements.md`
+- `docs/designs/T-xxx-design.md`
+- `docs/plans/T-xxx-plan.md`
+- `docs/tasks/T-xxx.md`
+
+Implementation may begin only after:
+
+```bash
+bash scripts/spec-lint.sh T-xxx
+bash scripts/plan-lock.sh T-xxx
+bash scripts/plan-guard.sh T-xxx S-xxx
+```
+
+If a tool needs to change scope after lock, it must stop and report
+`PLAN_CHANGE_REQUIRED`.
+
 ## Startup Command
 
 ```bash

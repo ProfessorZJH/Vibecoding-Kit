@@ -14,3 +14,7 @@ protocol.
 7. Commit and push when requested and allowed.
 
 Codex plans are helpful, but they are not the source of truth.
+
+Before implementation, convert the tool's native plan into the locked plan engine contract.
+Native todos, modes, and plan panes are scratch state; the portable contract is
+`docs/plans/T-xxx-plan.md` plus `docs/AI_STATE.yml`.
