@@ -7,7 +7,10 @@ This map separates reusable vibecoding rules from project-specific rules.
 - AI entry rules.
 - Machine-readable AI state.
 - Project state.
+- Installed workflow guide.
 - Task card template.
+- Requirements, design, and plan templates.
+- Plan lock, step control, and current-step allowlist checks.
 - Git commit / push checkpoints.
 - Preflight and closeout scripts.
 - Drift guard orchestration.
@@ -45,3 +48,11 @@ docs/reference/xfg-ddd-scaffold-lite-jdk17
 
 - `java-spring`: Maven/Java/Spring checks.
 - `vue`: npm/Vue checks.
+- `api-contract`: API contract-first design before Swagger/OpenAPI output.
+
+## Agent Adapter Profile
+
+- Codex, Claude Code, Gemini, Cursor, Windsurf, Cline, Roo, GitHub Copilot, and
+  Superpowers entry files.
+- Shared rule: native plans are allowed, but repository artifacts remain the
+  source of truth.

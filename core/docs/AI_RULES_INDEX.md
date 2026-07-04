@@ -3,6 +3,12 @@
 This file is the short index for AI agents. Full rules live in the referenced
 documents and selected profiles.
 
+For the full generated-project workflow, read:
+
+```txt
+docs/VIBECODING_WORKFLOW.md
+```
+
 ## Required Startup
 
 ```bash
