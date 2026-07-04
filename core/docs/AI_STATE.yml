@@ -1,5 +1,14 @@
 current_task: T-000
 mode: initialization
+workflow_status: implementation
+requirements_status: approved
+design_status: approved
+plan_status: locked
+current_step: S-001
+require_plan_guard: true
+require_step_commit: true
+plan_change_status: none
+plan_hash: __PLAN_HASH__
 require_commit: true
 require_push: false
 protected_branches:

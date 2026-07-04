@@ -19,16 +19,28 @@ record_failure() {
 artifact_hits="$(git ls-files --others --cached --exclude-standard 2>/dev/null | rg '(^|/)(target|node_modules|\.m2home|\.idea)(/|$)|(^|/)\.env(\.|$)|\.pem$|\.key$|(^|/)id_rsa$|(^|/)id_ed25519$' || true)"
 [[ -z "$artifact_hits" ]] || record_failure "forbidden files" "$artifact_hits"
 
+current_task="$(awk -F: '$1 == "current_task" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' docs/AI_STATE.yml 2>/dev/null || true)"
+
 for guard in scripts/*-guard.sh; do
   [[ -x "$guard" ]] || continue
   [[ "$guard" == "scripts/drift-guard.sh" ]] && continue
+  [[ "$guard" == "scripts/plan-guard.sh" ]] && continue
   [[ "$guard" == "scripts/secrets-guard.sh" ]] && continue
   bash "$guard"
 done
 
-current_task="$(awk -F: '$1 == "current_task" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' docs/AI_STATE.yml 2>/dev/null || true)"
 if [[ "$current_task" =~ ^T-[0-9]{3}$ ]]; then
   bash scripts/task-card-lint.sh "$current_task"
+fi
+
+require_plan_guard="$(awk -F: '$1 == "require_plan_guard" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' docs/AI_STATE.yml 2>/dev/null || true)"
+current_step="$(awk -F: '$1 == "current_step" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' docs/AI_STATE.yml 2>/dev/null || true)"
+if [[ "$require_plan_guard" == "true" ]]; then
+  if [[ "$current_task" =~ ^T-[0-9]{3}$ && "$current_step" =~ ^S-[0-9]{3}$ ]]; then
+    bash scripts/plan-guard.sh "$current_task" "$current_step"
+  else
+    record_failure "plan guard" "missing current_task or current_step"
+  fi
 fi
 
 bash scripts/secrets-guard.sh

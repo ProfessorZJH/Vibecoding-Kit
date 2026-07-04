@@ -21,6 +21,13 @@ Why this task exists.
 - secrets
 - generated artifacts
 
+## Plan Contract
+
+- requirements: `docs/specs/T-xxx-requirements.md`
+- design: `docs/designs/T-xxx-design.md`
+- plan: `docs/plans/T-xxx-plan.md`
+- current_step: S-001
+
 ## Required Work
 
 - item
