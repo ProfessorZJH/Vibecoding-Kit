@@ -245,6 +245,17 @@ if [[ "$write_report" == true ]]; then
       done
     fi
     echo
+    echo "## Prompt Modules"
+    echo
+    echo "- prompts/00-agent-contract.md"
+    echo "- prompts/01-explore-readonly.md"
+    echo "- prompts/02-plan-locked-task.md"
+    echo "- prompts/03-implement-current-step.md"
+    echo "- prompts/04-command-classifier.md"
+    echo "- prompts/05-security-review.md"
+    echo "- prompts/06-closeout-report.md"
+    echo "- prompts/07-task-memory-summary.md"
+    echo
     echo "## Next Commands"
     echo
     echo '```bash'

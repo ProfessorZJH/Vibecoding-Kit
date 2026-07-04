@@ -13,6 +13,7 @@ Read these files before implementation:
 
 - `docs/AI_STATE.yml`
 - `docs/AI_RULES_INDEX.md`
+- `prompts/00-agent-contract.md`
 - `docs/tasks/T-xxx.md`
 - `docs/specs/T-xxx-requirements.md`
 - `docs/designs/T-xxx-design.md`
@@ -28,6 +29,15 @@ bash scripts/plan-guard.sh T-xxx S-xxx
 
 Implementation must only change files allowed by the current plan step. Native
 AI plans and todo lists are allowed, but they must match the repository plan.
+
+## Use Prompt Modes
+
+Use the installed prompts as mode-specific guidance:
+
+- `prompts/01-explore-readonly.md` for read-only exploration.
+- `prompts/02-plan-locked-task.md` for guard-checkable planning.
+- `prompts/03-implement-current-step.md` for scoped implementation.
+- `prompts/06-closeout-report.md` for completion reporting.
 
 ## Complete A Step
 

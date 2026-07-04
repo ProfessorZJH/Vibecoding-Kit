@@ -11,4 +11,6 @@
 
 ## Unreleased
 
+- Added modular Vibecoding agent prompt modules and routed agent adapter entry
+  files to the shared prompt layer.
 - TypeScript CLI wrapper is planned after the demo and CI path are stable.

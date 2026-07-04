@@ -1,38 +1,64 @@
-# AI Work Rules
+# Vibecoding Kit Agent Adapter
 
-This repository uses vibecoding-kit as the source of truth for AI-assisted
-development. These rules apply to Codex and any agent that reads `AGENTS.md`.
+This repository is governed by Vibecoding Kit. These rules apply to Codex and
+any agent that reads `AGENTS.md`.
 
-## Startup
+The repository is the source of truth. Chat context and native planning tools
+are scratch work unless written back to repository files.
 
-1. Read `docs/PROJECT_STATE.md`.
-2. Read `docs/AI_STATE.yml`.
-3. Read `docs/AI_RULES_INDEX.md`.
-4. Read `docs/ai/PLAN_PROTOCOL.md`.
-5. Read the current task card under `docs/tasks/T-xxx.md`.
-6. Run `bash scripts/ai-preflight.sh T-xxx`.
+## Required Reading
 
-## Planning
+Before working, read:
 
-- Native planning tools, todo lists, scratchpads, and sub-agent plans are allowed.
-- The final actionable plan must be reflected in `docs/tasks/T-xxx.md`.
-- A native plan is never the source of truth if it conflicts with the task card.
+- `docs/AI_STATE.yml`
+- `docs/VIBECODING_WORKFLOW.md`
+- `docs/AI_RULES_INDEX.md`
+- `docs/ai/PLAN_PROTOCOL.md`
+- current task card under `docs/tasks/`
+- related files under `docs/specs/`
+- related files under `docs/designs/`
+- related files under `docs/plans/`
 
-## Execution
+Follow the installed prompt modules:
 
-- Only execute the current task.
-- Only change files allowed by the task card.
-- Do not bypass security, permissions, audit, validations, or state transitions.
-- Do not invent extra requirements outside the task card.
+- `prompts/00-agent-contract.md`
+- `prompts/01-explore-readonly.md`
+- `prompts/02-plan-locked-task.md`
+- `prompts/03-implement-current-step.md`
+- `prompts/04-command-classifier.md`
+- `prompts/05-security-review.md`
+- `prompts/06-closeout-report.md`
+- `prompts/07-task-memory-summary.md`
 
-## Completion
+## Operating Modes
 
-Run:
+- Use Explore Mode when locating files or understanding the project.
+- Use Plan Mode when designing implementation steps.
+- Use Implement Mode only after the plan is locked and the current step is
+  active.
+- Use Closeout Mode before marking a task complete.
+
+## Hard Rules
+
+- Do not rely only on chat context.
+- Do not edit files outside the current step allowlist.
+- Do not touch forbidden paths.
+- Do not bypass guard scripts.
+- Do not claim tests or guards passed unless they actually ran.
+- If implementation requires files outside the plan, stop and request a plan
+  update.
+
+## Required Workflow
 
 ```bash
+bash scripts/ai-preflight.sh T-xxx
+bash scripts/spec-lint.sh T-xxx
+bash scripts/plan-lock.sh T-xxx
+bash scripts/plan-step.sh T-xxx S-xxx --start
+bash scripts/plan-guard.sh T-xxx S-xxx
 bash scripts/drift-guard.sh
+bash scripts/secrets-guard.sh
 bash scripts/task-closeout.sh T-xxx --write-report
 ```
 
-Do not claim completion without `COMMIT_CHECKPOINT`, `PUSH_CHECKPOINT`,
-`NO_COMMIT_CHECKPOINT`, or `NO_PUSH_CHECKPOINT`.
+If any guard fails, stop and report the failure.
