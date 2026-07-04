@@ -8,7 +8,20 @@ sub-agent, and worktree must read project files before development.
 1. `docs/PROJECT_STATE.md`
 2. `docs/AI_STATE.yml`
 3. `docs/AI_RULES_INDEX.md`
-4. Current task card: `docs/tasks/T-xxx.md`
+4. `docs/VIBECODING_WORKFLOW.md`
+5. Current task card: `docs/tasks/T-xxx.md`
+6. Related files under `docs/specs/`, `docs/designs/`, and `docs/plans/`
+
+Use the installed prompt modules for mode-specific behavior:
+
+- `prompts/00-agent-contract.md`
+- `prompts/01-explore-readonly.md`
+- `prompts/02-plan-locked-task.md`
+- `prompts/03-implement-current-step.md`
+- `prompts/04-command-classifier.md`
+- `prompts/05-security-review.md`
+- `prompts/06-closeout-report.md`
+- `prompts/07-task-memory-summary.md`
 
 After reading the task card, run:
 

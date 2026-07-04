@@ -137,6 +137,27 @@ bash scripts/task-closeout.sh T-001 --write-report --push
 The default behavior requires local commit checkpoints. Remote push is reported
 only when requested and possible.
 
+## Modular Agent Prompts
+
+Vibecoding Kit includes shared prompt modules for AI coding agents under
+`core/prompts/`. When installed into a target project, they are copied to
+`prompts/`.
+
+The modules cover:
+
+- global agent contract
+- read-only exploration
+- plan-locked task planning
+- current-step implementation
+- command risk classification
+- high-confidence security review
+- closeout reporting
+- task memory summary for long sessions
+
+Agent adapter files such as `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, Cursor,
+Cline, Roo, Windsurf, and GitHub Copilot instructions reference these shared
+modules instead of duplicating the full prompt text.
+
 ## Verify The Kit
 
 ```bash
@@ -160,3 +181,4 @@ bash scripts/install-git-hooks.sh
 - [AI Drift Demo](examples/ai-drift-demo/README.md)
 - [Examples](docs/EXAMPLES.md)
 - [Extraction Map](docs/EXTRACTION_MAP.md)
+- [Prompt Modules](core/prompts/README.md)

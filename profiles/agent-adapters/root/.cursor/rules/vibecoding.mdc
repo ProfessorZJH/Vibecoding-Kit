@@ -9,15 +9,27 @@ Cursor must use repository files as the source of truth.
 
 Before editing:
 
-1. Read `docs/PROJECT_STATE.md`.
-2. Read `docs/AI_STATE.yml`.
+1. Read `docs/AI_STATE.yml`.
+2. Read `docs/VIBECODING_WORKFLOW.md`.
 3. Read `docs/AI_RULES_INDEX.md`.
 4. Read `docs/ai/PLAN_PROTOCOL.md`.
 5. Read the current task card under `docs/tasks/T-xxx.md`.
-6. Run `bash scripts/ai-preflight.sh T-xxx`.
+6. Read related specs, designs, and plans.
+7. Run `bash scripts/ai-preflight.sh T-xxx`.
+
+Use the shared prompt modules:
+
+- `prompts/00-agent-contract.md`
+- `prompts/01-explore-readonly.md`
+- `prompts/02-plan-locked-task.md`
+- `prompts/03-implement-current-step.md`
+- `prompts/04-command-classifier.md`
+- `prompts/05-security-review.md`
+- `prompts/06-closeout-report.md`
+- `prompts/07-task-memory-summary.md`
 
 Cursor composer plans and chat plans are scratch work. The executable plan must
-be reflected in `docs/tasks/T-xxx.md`.
+be reflected in repository task and plan files.
 
 Before completion, run:
 

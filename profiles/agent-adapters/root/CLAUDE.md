@@ -1,22 +1,38 @@
 # Claude Code Protocol
 
-Claude Code must use the repository files as the source of truth.
+Claude Code must use repository files as the source of truth. Claude plans,
+todos, and sub-agent outputs are scratch work until reflected in the task card
+and locked plan.
 
 ## Required Startup
 
 1. Read `AGENTS.md`.
-2. Read `docs/PROJECT_STATE.md`.
-3. Read `docs/AI_STATE.yml`.
+2. Read `docs/AI_STATE.yml`.
+3. Read `docs/VIBECODING_WORKFLOW.md`.
 4. Read `docs/AI_RULES_INDEX.md`.
 5. Read `docs/ai/PLAN_PROTOCOL.md`.
 6. Read the current task card under `docs/tasks/T-xxx.md`.
-7. Run `bash scripts/ai-preflight.sh T-xxx`.
+7. Read related specs, designs, and plans.
+8. Run `bash scripts/ai-preflight.sh T-xxx`.
+
+## Prompt Modules
+
+Use the installed prompt modules as mode-specific instructions:
+
+- `prompts/00-agent-contract.md`
+- `prompts/01-explore-readonly.md`
+- `prompts/02-plan-locked-task.md`
+- `prompts/03-implement-current-step.md`
+- `prompts/04-command-classifier.md`
+- `prompts/05-security-review.md`
+- `prompts/06-closeout-report.md`
+- `prompts/07-task-memory-summary.md`
 
 ## Planning Compatibility
 
-Claude Code plans, todos, and sub-agent plans are useful working tools, but the
-project plan must be written back to `docs/tasks/T-xxx.md` before execution.
-If a Claude Code plan conflicts with the task card, follow the task card.
+Before implementation, write the final actionable scope into repository files
+and lock the plan. If a Claude Code plan conflicts with the task card or locked
+plan, follow the repository files.
 
 ## Closeout
 
@@ -27,4 +43,5 @@ bash scripts/drift-guard.sh
 bash scripts/task-closeout.sh T-xxx --write-report
 ```
 
-Report the git and push checkpoint from closeout.
+Report the git and push checkpoint from closeout. Do not claim completion unless
+tests and guards actually ran.
