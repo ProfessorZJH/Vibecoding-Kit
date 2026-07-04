@@ -1,5 +1,7 @@
 # Vibecoding Kit
 
+[![test-kit](https://github.com/ProfessorZJH/Vibecoding-Kit/actions/workflows/test-kit.yml/badge.svg)](https://github.com/ProfessorZJH/Vibecoding-Kit/actions/workflows/test-kit.yml)
+
 Reusable project operating-system templates for AI-assisted development.
 
 The kit installs file-based memory, task cards, guard scripts, Git checkpoints,
@@ -30,6 +32,31 @@ truth:
 
 The template does not make an AI perfect. It gives the project a way to detect,
 block, and audit plan drift.
+
+## 30-Second Demo
+
+Run the drift demo:
+
+```bash
+bash examples/ai-drift-demo/run-demo.sh
+```
+
+The demo locks a plan step to one Java service file, then simulates an AI agent
+also editing runtime configuration. The guard blocks the out-of-plan file:
+
+```txt
+DEMO_STEP unauthorized_change_blocked
+PLAN_GUARD_FAIL: unauthorized file
+src/main/resources/application.yml
+```
+
+After the plan is intentionally updated and relocked, the task can close out:
+
+```txt
+DEMO_STEP relocked_after_plan_update
+DEMO_STEP closeout_report_written
+DEMO_PASS
+```
 
 ## Quick Start
 
@@ -129,5 +156,7 @@ bash scripts/install-git-hooks.sh
 
 - [Template Handbook](docs/TEMPLATE_HANDBOOK.md)
 - [Plan Engine MVP](docs/releases/PLAN_ENGINE_MVP.md)
+- [v0.1.0 Release Notes](docs/releases/v0.1.0.md)
+- [AI Drift Demo](examples/ai-drift-demo/README.md)
 - [Examples](docs/EXAMPLES.md)
 - [Extraction Map](docs/EXTRACTION_MAP.md)
