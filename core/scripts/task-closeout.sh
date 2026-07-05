@@ -116,6 +116,26 @@ if [[ "$require_plan_guard" == "true" ]]; then
   fi
 fi
 
+risk_report="not_found"
+risk_json="not_found"
+overall_risk="unknown"
+risk_decision="not_evaluated"
+
+report_md_path="reports/ai-risk/${task}-risk-report.md"
+report_json_path="reports/ai-risk/${task}-risk-report.json"
+
+if [[ -f "$report_md_path" ]]; then
+  risk_report="$report_md_path"
+  overall_risk="$(awk -F: '$1 == "- overall_risk" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' "$report_md_path")"
+  risk_decision="$(awk -F: '$1 == "- decision" { v=$2; gsub(/^[ \t]+|[ \t]+$/, "", v); print v; exit }' "$report_md_path")"
+  [[ -n "$overall_risk" ]] || overall_risk="unknown"
+  [[ -n "$risk_decision" ]] || risk_decision="not_evaluated"
+fi
+
+if [[ -f "$report_json_path" ]]; then
+  risk_json="$report_json_path"
+fi
+
 git_checkpoint="COMMIT_REQUIRED"
 if [[ -z "$changed_files" && "$has_head" == true ]]; then
   latest_subject="$(git log -1 --pretty=%s)"
@@ -184,6 +204,13 @@ ${local_artifacts:-none}
 - drift_guard: $drift_result
 - plan_guard: $plan_result
 
+## Risk Report
+
+- risk_report: $risk_report
+- risk_json: $risk_json
+- overall_risk: $overall_risk
+- decision: $risk_decision
+
 ## Checkpoints
 
 - git: $git_checkpoint
@@ -211,6 +238,10 @@ ${local_artifacts:-  none}
 tests_run: $tests_result
 drift_guard: $drift_result
 plan_guard: $plan_result
+risk_report: $risk_report
+risk_json: $risk_json
+overall_risk: $overall_risk
+risk_decision: $risk_decision
 git_checkpoint: $git_checkpoint
 push_checkpoint: $push_checkpoint
 closeout_report: $closeout_report

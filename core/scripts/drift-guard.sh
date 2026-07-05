@@ -24,6 +24,7 @@ current_task="$(awk -F: '$1 == "current_task" { v=$2; gsub(/^[ \t]+|[ \t]+$/, ""
 for guard in scripts/*-guard.sh; do
   [[ -x "$guard" ]] || continue
   [[ "$guard" == "scripts/drift-guard.sh" ]] && continue
+  [[ "$guard" == "scripts/command-guard.sh" ]] && continue
   [[ "$guard" == "scripts/plan-guard.sh" ]] && continue
   [[ "$guard" == "scripts/secrets-guard.sh" ]] && continue
   bash "$guard"
@@ -40,6 +41,12 @@ if [[ "$require_plan_guard" == "true" ]]; then
     bash scripts/plan-guard.sh "$current_task" "$current_step"
   else
     record_failure "plan guard" "missing current_task or current_step"
+  fi
+fi
+
+if [[ "$current_task" =~ ^T-[0-9]{3}$ && -x "scripts/risk-report.sh" ]]; then
+  if ! bash scripts/risk-report.sh "$current_task" >/dev/null; then
+    record_failure "risk report" "risk-report failed"
   fi
 fi
 

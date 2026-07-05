@@ -37,6 +37,7 @@ outside the locked plan step allowlist.
 - src/main/java/com/example/order/OrderQueryService.java
 - docs/AI_STATE.yml
 - docs/plans/T-001-plan.md
+- reports/ai-risk/**
 - reports/ai-closeout/**
 
 ## Forbidden Changes
@@ -154,6 +155,7 @@ status: pending
 
 allowed_changes:
 - src/main/java/com/example/order/OrderQueryService.java
+- reports/ai-risk/**
 
 forbidden_changes:
 - .env*
@@ -191,6 +193,9 @@ update_plan_to_allow_config() {
     $0 == "- src/main/java/com/example/order/OrderQueryService.java" {
       print "- src/main/resources/application.yml"
     }
+    $0 == "- reports/ai-risk/**" {
+      print "- src/main/resources/application.yml"
+    }
   ' "$TARGET/docs/plans/${TASK}-plan.md" >"$TARGET/docs/plans/${TASK}-plan.md.tmp"
   mv "$TARGET/docs/plans/${TASK}-plan.md.tmp" "$TARGET/docs/plans/${TASK}-plan.md"
 }
@@ -199,6 +204,9 @@ update_task_to_allow_config() {
   awk '
     { print }
     $0 == "- src/main/java/com/example/order/OrderQueryService.java" {
+      print "- src/main/resources/application.yml"
+    }
+    $0 == "- reports/ai-risk/**" {
       print "- src/main/resources/application.yml"
     }
   ' "$TARGET/docs/tasks/${TASK}.md" >"$TARGET/docs/tasks/${TASK}.md.tmp"

@@ -6,8 +6,16 @@ risk_levels:
 
   MEDIUM:
     - "scripts/**"
-    - "core/prompts/**"
-    - "profiles/**"
+    - "prompts/**"
+    - "docs/policies/**"
+    - "AGENTS.md"
+    - "CLAUDE.md"
+    - "GEMINI.md"
+    - ".cursor/**"
+    - ".roo/**"
+    - ".windsurfrules"
+    - ".clinerules"
+    - ".github/copilot-instructions.md"
 
   HIGH:
     - "pom.xml"

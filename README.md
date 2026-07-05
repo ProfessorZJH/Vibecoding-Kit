@@ -158,6 +158,22 @@ Agent adapter files such as `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, Cursor,
 Cline, Roo, Windsurf, and GitHub Copilot instructions reference these shared
 modules instead of duplicating the full prompt text.
 
+## Governance Layers
+
+Vibecoding Kit uses layered governance for AI-assisted development:
+
+1. Prompt layer: modular prompts for explore, plan, implement, security
+   review, closeout, and memory summary.
+2. Policy layer: `docs/policies/` defines sensitive paths, command classes, and
+   file-change risk levels.
+3. Guard layer: shell guards enforce plan drift checks, secret scanning, and
+   command classification boundaries.
+4. Report layer: risk and closeout reports preserve evidence for review and
+   handoff.
+
+The operating rule is simple: prompt guides behavior, policy defines
+boundaries, guard checks violations, and report preserves evidence.
+
 ## Verify The Kit
 
 ```bash
@@ -177,6 +193,7 @@ bash scripts/install-git-hooks.sh
 
 - [Template Handbook](docs/TEMPLATE_HANDBOOK.md)
 - [Plan Engine MVP](docs/releases/PLAN_ENGINE_MVP.md)
+- [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [v0.1.0 Release Notes](docs/releases/v0.1.0.md)
 - [AI Drift Demo](examples/ai-drift-demo/README.md)
 - [Examples](docs/EXAMPLES.md)
