@@ -4,6 +4,9 @@ This document packages Vibecoding Kit into wording that is usable in README
 copy, resume bullets, and interview discussion without overstating what the kit
 does.
 
+For a Chinese interview-oriented talk track, see
+[docs/INTERVIEW_CN.md](INTERVIEW_CN.md).
+
 ## One-Sentence Positioning
 
 Vibecoding Kit is a repository-level governance kit for AI coding agents. It

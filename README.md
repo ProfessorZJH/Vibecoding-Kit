@@ -201,6 +201,7 @@ bash scripts/install-git-hooks.sh
 
 - [Template Handbook](docs/TEMPLATE_HANDBOOK.md)
 - [Positioning and Talk Track](docs/POSITIONING.md)
+- [Chinese Interview Talk Track](docs/INTERVIEW_CN.md)
 - [Plan Engine MVP](docs/releases/PLAN_ENGINE_MVP.md)
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [v0.1.0 Release Notes](docs/releases/v0.1.0.md)
