@@ -128,7 +128,9 @@ assert_contains "$(cat profiles/agent-adapters/root/.windsurfrules)" "workflows/
 assert_contains "$(cat profiles/agent-adapters/root/.roo/rules/vibecoding.md)" "workflows/README.md"
 assert_contains "$(cat profiles/agent-adapters/root/.github/copilot-instructions.md)" "workflows/README.md"
 assert_contains "$(cat core/AGENTS.md)" "prompts/00-agent-contract.md"
+assert_contains "$(cat core/AGENTS.md)" "workflows/README.md"
 assert_contains "$(cat core/CLAUDE.md)" "prompts/03-implement-current-step.md"
+assert_contains "$(cat core/CLAUDE.md)" "workflows/README.md"
 
 demo_output="$(bash examples/ai-drift-demo/run-demo.sh)"
 assert_contains "$demo_output" "DEMO_STEP unauthorized_change_blocked"

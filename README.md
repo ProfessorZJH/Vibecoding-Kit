@@ -207,6 +207,8 @@ bash scripts/install-git-hooks.sh
 - [Chinese Interview Talk Track](docs/INTERVIEW_CN.md)
 - [Plan Engine MVP](docs/releases/PLAN_ENGINE_MVP.md)
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
+- [Workflow Layer](core/workflows/README.md)
+- [v0.3.0 Release Notes](docs/releases/v0.3.0.md)
 - [v0.2.0 Release Notes](docs/releases/v0.2.0.md)
 - [v0.1.0 Release Notes](docs/releases/v0.1.0.md)
 - [AI Drift Demo](examples/ai-drift-demo/README.md)

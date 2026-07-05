@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.3.0 - 2026-07-05
+
+- Added reusable workflow documents for project scan, task creation, plan lock,
+  step implementation, risk review, and closeout.
+- Added an adapter capability matrix covering Codex, Claude Code, Gemini,
+  Cursor, Cline, Roo, Windsurf, GitHub Copilot, and Superpowers.
+- Routed adapter entry files and core agent instructions to the workflow layer.
+- Extended kit tests to verify workflow installation and adapter references.
+
 ## v0.2.0 - 2026-07-05
 
 - Added modular Vibecoding prompt modules and routed agent adapter entry files

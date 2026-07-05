@@ -4,7 +4,7 @@ status: locked
 
 ## S-001 Add T-003 Source Of Truth
 
-status: pending
+status: completed
 
 allowed_changes:
 - docs/tasks/T-003.md
@@ -43,7 +43,7 @@ commit:
 
 ## S-002 Add Workflow Documents
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/workflows/README.md
@@ -88,7 +88,7 @@ commit:
 
 ## S-003 Add Adapter Capability Matrix
 
-status: pending
+status: completed
 
 allowed_changes:
 - docs/adapter-capabilities.md
@@ -124,7 +124,7 @@ commit:
 
 ## S-004 Update Adapter Entry Files and README
 
-status: pending
+status: completed
 
 allowed_changes:
 - profiles/agent-adapters/root/**
@@ -160,7 +160,7 @@ commit:
 
 ## S-005 Extend Tests and Verify
 
-status: pending
+status: completed
 
 allowed_changes:
 - scripts/test-kit.sh
