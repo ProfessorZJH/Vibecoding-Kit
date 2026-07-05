@@ -7,6 +7,7 @@ Startup:
 - Read `docs/VIBECODING_WORKFLOW.md`.
 - Read `docs/AI_RULES_INDEX.md`.
 - Read `docs/ai/PLAN_PROTOCOL.md`.
+- Read `workflows/README.md`.
 - Read the current task card.
 - Read related specs, designs, and plans.
 - Run `bash scripts/ai-preflight.sh T-xxx`.
@@ -23,6 +24,7 @@ Planning:
 - Windsurf plans are scratch work.
 - Write the final plan and allowed file scope into repository task and plan
   files.
+- Use `workflows/README.md` to choose the current phase workflow.
 
 Completion:
 - Run `bash scripts/drift-guard.sh`.

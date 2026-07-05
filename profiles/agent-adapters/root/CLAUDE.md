@@ -11,9 +11,10 @@ and locked plan.
 3. Read `docs/VIBECODING_WORKFLOW.md`.
 4. Read `docs/AI_RULES_INDEX.md`.
 5. Read `docs/ai/PLAN_PROTOCOL.md`.
-6. Read the current task card under `docs/tasks/T-xxx.md`.
-7. Read related specs, designs, and plans.
-8. Run `bash scripts/ai-preflight.sh T-xxx`.
+6. Read `workflows/README.md`.
+7. Read the current task card under `docs/tasks/T-xxx.md`.
+8. Read related specs, designs, and plans.
+9. Run `bash scripts/ai-preflight.sh T-xxx`.
 
 ## Prompt Modules
 
@@ -27,6 +28,9 @@ Use the installed prompt modules as mode-specific instructions:
 - `prompts/05-security-review.md`
 - `prompts/06-closeout-report.md`
 - `prompts/07-task-memory-summary.md`
+
+Use `workflows/README.md` to select the current phase workflow before changing
+files.
 
 ## Planning Compatibility
 

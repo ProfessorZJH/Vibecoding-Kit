@@ -172,15 +172,18 @@ Vibecoding Kit uses layered governance for AI-assisted development:
 
 1. Prompt layer: modular prompts for explore, plan, implement, security
    review, closeout, and memory summary.
-2. Policy layer: `docs/policies/` defines sensitive paths, command classes, and
+2. Workflow layer: `workflows/` defines project scan, task creation, plan lock,
+   implementation, risk review, and closeout phases.
+3. Policy layer: `docs/policies/` defines sensitive paths, command classes, and
    file-change risk levels.
-3. Guard layer: shell guards enforce plan drift checks, secret scanning, and
+4. Guard layer: shell guards enforce plan drift checks, secret scanning, and
    command classification boundaries.
-4. Report layer: risk and closeout reports preserve evidence for review and
+5. Report layer: risk and closeout reports preserve evidence for review and
    handoff.
 
-The operating rule is simple: prompt guides behavior, policy defines
-boundaries, guard checks violations, and report preserves evidence.
+The operating rule is simple: prompt guides behavior, workflow sequences action,
+policy defines boundaries, guard checks violations, and report preserves
+evidence.
 
 ## Verify The Kit
 
@@ -210,3 +213,4 @@ bash scripts/install-git-hooks.sh
 - [Examples](docs/EXAMPLES.md)
 - [Extraction Map](docs/EXTRACTION_MAP.md)
 - [Prompt Modules](core/prompts/README.md)
+- [Adapter Capability Matrix](docs/adapter-capabilities.md)

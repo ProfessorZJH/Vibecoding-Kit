@@ -14,6 +14,7 @@ Before working, read:
 - `docs/VIBECODING_WORKFLOW.md`
 - `docs/AI_RULES_INDEX.md`
 - `docs/ai/PLAN_PROTOCOL.md`
+- `workflows/README.md`
 - current task card under `docs/tasks/`
 - related files under `docs/specs/`
 - related files under `docs/designs/`
@@ -29,6 +30,15 @@ Follow the installed prompt modules:
 - `prompts/05-security-review.md`
 - `prompts/06-closeout-report.md`
 - `prompts/07-task-memory-summary.md`
+
+Use installed workflow modules for phase-specific execution:
+
+- `workflows/project-scan.md`
+- `workflows/task-create.md`
+- `workflows/plan-lock.md`
+- `workflows/implement-step.md`
+- `workflows/risk-review.md`
+- `workflows/closeout.md`
 
 ## Operating Modes
 

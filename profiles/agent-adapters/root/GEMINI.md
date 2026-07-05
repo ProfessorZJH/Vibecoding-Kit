@@ -8,9 +8,10 @@ Gemini must treat Vibecoding Kit files as the execution protocol.
 2. Read `docs/VIBECODING_WORKFLOW.md`.
 3. Read `docs/AI_RULES_INDEX.md`.
 4. Read `docs/ai/PLAN_PROTOCOL.md`.
-5. Read `docs/tasks/T-xxx.md`.
-6. Read related specs, designs, and plans.
-7. Run `bash scripts/ai-preflight.sh T-xxx`.
+5. Read `workflows/README.md`.
+6. Read `docs/tasks/T-xxx.md`.
+7. Read related specs, designs, and plans.
+8. Run `bash scripts/ai-preflight.sh T-xxx`.
 
 ## Prompt Modules
 
@@ -24,6 +25,9 @@ Follow:
 - `prompts/05-security-review.md`
 - `prompts/06-closeout-report.md`
 - `prompts/07-task-memory-summary.md`
+
+Use `workflows/README.md` to choose the project-scan, task-create, plan-lock,
+implement-step, risk-review, or closeout workflow.
 
 ## Native Planning
 

@@ -7,9 +7,10 @@ Required startup:
 2. Read `docs/VIBECODING_WORKFLOW.md`.
 3. Read `docs/AI_RULES_INDEX.md`.
 4. Read `docs/ai/PLAN_PROTOCOL.md`.
-5. Read `docs/tasks/T-xxx.md`.
-6. Read related specs, designs, and plans.
-7. Run `bash scripts/ai-preflight.sh T-xxx`.
+5. Read `workflows/README.md`.
+6. Read `docs/tasks/T-xxx.md`.
+7. Read related specs, designs, and plans.
+8. Run `bash scripts/ai-preflight.sh T-xxx`.
 
 Use shared prompt modules:
 - `prompts/00-agent-contract.md`
@@ -20,6 +21,8 @@ Use shared prompt modules:
 
 Native Cline plans are allowed, but the final actionable plan must be captured
 in repository task and plan files before implementation.
+
+Use `workflows/README.md` to choose the current phase workflow.
 
 Required closeout:
 - `bash scripts/drift-guard.sh`

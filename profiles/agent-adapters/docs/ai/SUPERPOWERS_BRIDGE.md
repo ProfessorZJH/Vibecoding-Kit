@@ -17,6 +17,8 @@ back to the project protocol.
 Use Superpowers for thinking and task execution discipline, but do not let a
 Superpowers plan replace the task card. Before implementation, the actionable
 scope must exist in `docs/tasks/T-xxx.md`.
+Use `workflows/README.md` to map Superpowers activity to the current
+Vibecoding phase.
 
 Before implementation, convert the tool's native plan into the locked plan engine contract.
 Native todos, modes, and plan panes are scratch state; the portable contract is

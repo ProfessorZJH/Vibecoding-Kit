@@ -8,6 +8,7 @@ Before editing, read:
 - `docs/VIBECODING_WORKFLOW.md`
 - `docs/AI_RULES_INDEX.md`
 - `docs/ai/PLAN_PROTOCOL.md`
+- `workflows/README.md`
 - the current `docs/tasks/T-xxx.md`
 - related specs, designs, and plans
 
@@ -27,6 +28,7 @@ bash scripts/ai-preflight.sh T-xxx
 
 Copilot chat plans are not the source of truth. The final scope and acceptance
 criteria must live in repository task and plan files.
+Use `workflows/README.md` to choose the current phase workflow.
 
 Before claiming completion, run:
 

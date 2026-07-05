@@ -1,6 +1,8 @@
 # Agent Compatibility
 
 The kit works by normalizing every tool into the same file protocol.
+Use `docs/adapter-capabilities.md` for the full capability matrix and
+`workflows/README.md` for the phase workflow index.
 
 | Tool | Entry File | Rule |
 | --- | --- | --- |

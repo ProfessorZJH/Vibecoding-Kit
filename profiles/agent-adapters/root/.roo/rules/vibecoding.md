@@ -12,6 +12,7 @@ Read:
 - `docs/AI_STATE.yml`
 - `docs/VIBECODING_WORKFLOW.md`
 - `docs/ai/PLAN_PROTOCOL.md`
+- `workflows/README.md`
 - current task, spec, design, and plan files
 
 Use shared prompt modules:
@@ -23,6 +24,7 @@ Use shared prompt modules:
 
 Roo modes and planning are scratch work unless written back to the task card.
 If Roo's internal plan conflicts with repository files, follow repository files.
+Use `workflows/README.md` to choose the current phase workflow.
 
 Before completion:
 

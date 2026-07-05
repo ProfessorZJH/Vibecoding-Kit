@@ -13,9 +13,10 @@ Before editing:
 2. Read `docs/VIBECODING_WORKFLOW.md`.
 3. Read `docs/AI_RULES_INDEX.md`.
 4. Read `docs/ai/PLAN_PROTOCOL.md`.
-5. Read the current task card under `docs/tasks/T-xxx.md`.
-6. Read related specs, designs, and plans.
-7. Run `bash scripts/ai-preflight.sh T-xxx`.
+5. Read `workflows/README.md`.
+6. Read the current task card under `docs/tasks/T-xxx.md`.
+7. Read related specs, designs, and plans.
+8. Run `bash scripts/ai-preflight.sh T-xxx`.
 
 Use the shared prompt modules:
 
@@ -30,6 +31,8 @@ Use the shared prompt modules:
 
 Cursor composer plans and chat plans are scratch work. The executable plan must
 be reflected in repository task and plan files.
+
+Use `workflows/README.md` to pick the current phase before editing.
 
 Before completion, run:
 
