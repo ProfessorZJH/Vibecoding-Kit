@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # Vibecoding Protocol
 
 Cline must follow the file-based project protocol.
@@ -27,3 +28,4 @@ Use `workflows/README.md` to choose the current phase workflow.
 Required closeout:
 - `bash scripts/drift-guard.sh`
 - `bash scripts/task-closeout.sh T-xxx --write-report`
+<!-- VIBECODING-KIT:END -->

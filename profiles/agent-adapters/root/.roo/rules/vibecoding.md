@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # Vibecoding Protocol
 
 Roo must treat repository files as the source of truth.
@@ -32,3 +33,4 @@ Before completion:
 bash scripts/drift-guard.sh
 bash scripts/task-closeout.sh T-xxx --write-report
 ```
+<!-- VIBECODING-KIT:END -->

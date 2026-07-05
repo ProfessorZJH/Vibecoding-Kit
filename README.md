@@ -180,10 +180,12 @@ Vibecoding Kit uses layered governance for AI-assisted development:
    command classification boundaries.
 5. Report layer: risk and closeout reports preserve evidence for review and
    handoff.
+6. Adapter maintenance layer: managed adapter blocks let generated agent entry
+   files update safely without overwriting user-owned notes around the block.
 
 The operating rule is simple: prompt guides behavior, workflow sequences action,
 policy defines boundaries, guard checks violations, and report preserves
-evidence.
+evidence, and adapter maintenance preserves user-owned customization.
 
 ## Verify The Kit
 
@@ -208,6 +210,8 @@ bash scripts/install-git-hooks.sh
 - [Plan Engine MVP](docs/releases/PLAN_ENGINE_MVP.md)
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [Workflow Layer](core/workflows/README.md)
+- [Managed Adapter Blocks](docs/adapter-managed-blocks.md)
+- [v0.4.0 Release Notes](docs/releases/v0.4.0.md)
 - [v0.3.0 Release Notes](docs/releases/v0.3.0.md)
 - [v0.2.0 Release Notes](docs/releases/v0.2.0.md)
 - [v0.1.0 Release Notes](docs/releases/v0.1.0.md)

@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # __PROJECT_NAME__ - AI Execution Protocol
 
 Every AI model must complete startup before changing files.
@@ -38,3 +39,4 @@ files.
 - Do not claim completion while task changes are uncommitted unless
   `NO_COMMIT_CHECKPOINT` is reported.
 - Do not push protected branches without explicit user approval.
+<!-- VIBECODING-KIT:END -->

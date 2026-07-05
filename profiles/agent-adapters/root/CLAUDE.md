@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # Claude Code Protocol
 
 Claude Code must use repository files as the source of truth. Claude plans,
@@ -49,3 +50,4 @@ bash scripts/task-closeout.sh T-xxx --write-report
 
 Report the git and push checkpoint from closeout. Do not claim completion unless
 tests and guards actually ran.
+<!-- VIBECODING-KIT:END -->

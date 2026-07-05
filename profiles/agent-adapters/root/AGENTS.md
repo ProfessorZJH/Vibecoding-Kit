@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # Vibecoding Kit Agent Adapter
 
 This repository is governed by Vibecoding Kit. These rules apply to Codex and
@@ -72,3 +73,4 @@ bash scripts/task-closeout.sh T-xxx --write-report
 ```
 
 If any guard fails, stop and report the failure.
+<!-- VIBECODING-KIT:END -->

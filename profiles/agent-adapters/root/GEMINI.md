@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # Gemini CLI Protocol
 
 Gemini must treat Vibecoding Kit files as the execution protocol.
@@ -40,3 +41,4 @@ plan files.
 Run `bash scripts/drift-guard.sh` and
 `bash scripts/task-closeout.sh T-xxx --write-report`. Do not claim tests or
 guards passed unless they actually ran.
+<!-- VIBECODING-KIT:END -->

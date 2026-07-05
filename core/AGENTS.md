@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # AI Work Rules
 
 This project uses file-based vibecoding discipline. Every AI model, new window,
@@ -65,3 +66,4 @@ reason:
 needs:
 suggested_next_step:
 ```
+<!-- VIBECODING-KIT:END -->

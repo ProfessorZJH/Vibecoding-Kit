@@ -42,6 +42,28 @@ assert_count() {
   [[ "$actual" == "$count" ]] || fail "expected $expected count $count, got $actual"
 }
 
+MANAGED_BLOCK_BEGIN='<!-- VIBECODING-KIT:BEGIN -->'
+MANAGED_BLOCK_END='<!-- VIBECODING-KIT:END -->'
+
+assert_managed_block() {
+  local file="$1"
+  local begin_count
+  local end_count
+  local begin_line
+  local end_line
+
+  assert_file "$file"
+  begin_count="$(grep -Fxc "$MANAGED_BLOCK_BEGIN" "$file" || true)"
+  end_count="$(grep -Fxc "$MANAGED_BLOCK_END" "$file" || true)"
+
+  [[ "$begin_count" == "1" ]] || fail "expected exactly one managed block begin marker in $file, got $begin_count"
+  [[ "$end_count" == "1" ]] || fail "expected exactly one managed block end marker in $file, got $end_count"
+
+  begin_line="$(grep -Fnx "$MANAGED_BLOCK_BEGIN" "$file" | cut -d: -f1)"
+  end_line="$(grep -Fnx "$MANAGED_BLOCK_END" "$file" | cut -d: -f1)"
+  [[ "$begin_line" -lt "$end_line" ]] || fail "managed block markers out of order in $file"
+}
+
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
@@ -112,6 +134,9 @@ assert_file "core/docs/policies/path-policy.yml"
 assert_file "core/docs/policies/command-policy.yml"
 assert_file "core/docs/policies/risk-policy.yml"
 assert_file "docs/adapter-capabilities.md"
+assert_file "docs/adapter-managed-blocks.md"
+assert_file "docs/releases/v0.4.0.md"
+assert_executable "core/scripts/adapter-block.sh"
 assert_contains "$(cat docs/adapter-capabilities.md)" "Codex"
 assert_contains "$(cat docs/adapter-capabilities.md)" "Claude Code"
 assert_contains "$(cat docs/adapter-capabilities.md)" "GitHub Copilot"
@@ -131,6 +156,20 @@ assert_contains "$(cat core/AGENTS.md)" "prompts/00-agent-contract.md"
 assert_contains "$(cat core/AGENTS.md)" "workflows/README.md"
 assert_contains "$(cat core/CLAUDE.md)" "prompts/03-implement-current-step.md"
 assert_contains "$(cat core/CLAUDE.md)" "workflows/README.md"
+for adapter_file in \
+  core/AGENTS.md \
+  core/CLAUDE.md \
+  profiles/agent-adapters/root/AGENTS.md \
+  profiles/agent-adapters/root/CLAUDE.md \
+  profiles/agent-adapters/root/GEMINI.md \
+  profiles/agent-adapters/root/.cursor/rules/vibecoding.mdc \
+  profiles/agent-adapters/root/.clinerules \
+  profiles/agent-adapters/root/.windsurfrules \
+  profiles/agent-adapters/root/.roo/rules/vibecoding.md \
+  profiles/agent-adapters/root/.github/copilot-instructions.md
+do
+  assert_managed_block "$adapter_file"
+done
 
 demo_output="$(bash examples/ai-drift-demo/run-demo.sh)"
 assert_contains "$demo_output" "DEMO_STEP unauthorized_change_blocked"
@@ -194,6 +233,7 @@ assert_file "$MVP_TARGET/docs/DDD_STYLE.md"
 assert_file "$MVP_TARGET/docs/FINANCE_RULES.md"
 assert_file "$MVP_TARGET/docs/reference/xfg-ddd-scaffold-lite-jdk17/archetype-resources/pom.xml"
 assert_executable "$MVP_TARGET/scripts/ai-preflight.sh"
+assert_executable "$MVP_TARGET/scripts/adapter-block.sh"
 assert_executable "$MVP_TARGET/scripts/command-guard.sh"
 assert_executable "$MVP_TARGET/scripts/task-closeout.sh"
 assert_executable "$MVP_TARGET/scripts/drift-guard.sh"
@@ -206,6 +246,8 @@ assert_executable "$MVP_TARGET/scripts/spec-lint.sh"
 assert_executable "$MVP_TARGET/scripts/plan-lock.sh"
 assert_executable "$MVP_TARGET/scripts/plan-guard.sh"
 assert_executable "$MVP_TARGET/scripts/plan-step.sh"
+assert_managed_block "$MVP_TARGET/AGENTS.md"
+assert_managed_block "$MVP_TARGET/CLAUDE.md"
 
 mvp_preflight="$(cd "$MVP_TARGET" && bash scripts/ai-preflight.sh T-000)"
 assert_contains "$mvp_preflight" "PRECHECK"
@@ -227,6 +269,95 @@ assert_contains "$command_safe" "decision: allow"
 command_approval="$(cd "$MVP_TARGET" && bash scripts/command-guard.sh "npm install")"
 assert_contains "$command_approval" "COMMAND_GUARD_PASS"
 assert_contains "$command_approval" "decision: require_approval"
+
+adapter_valid="$TMP_DIR/adapter-valid.md"
+cat >"$adapter_valid" <<'EOF'
+user-before
+<!-- VIBECODING-KIT:BEGIN -->
+managed
+<!-- VIBECODING-KIT:END -->
+user-after
+EOF
+adapter_check="$(cd "$MVP_TARGET" && bash scripts/adapter-block.sh --check "$adapter_valid")"
+assert_contains "$adapter_check" "ADAPTER_BLOCK_PASS"
+
+adapter_missing="$TMP_DIR/adapter-missing.md"
+cat >"$adapter_missing" <<'EOF'
+user-only
+EOF
+if (cd "$MVP_TARGET" && bash scripts/adapter-block.sh --check "$adapter_missing") >"$TMP_DIR/adapter-missing.out" 2>&1; then
+  fail "adapter-block should reject files without managed block markers"
+fi
+assert_contains "$(cat "$TMP_DIR/adapter-missing.out")" "ADAPTER_BLOCK_FAIL"
+
+adapter_duplicate_begin="$TMP_DIR/adapter-duplicate-begin.md"
+cat >"$adapter_duplicate_begin" <<'EOF'
+<!-- VIBECODING-KIT:BEGIN -->
+managed-a
+<!-- VIBECODING-KIT:BEGIN -->
+managed-b
+<!-- VIBECODING-KIT:END -->
+EOF
+if (cd "$MVP_TARGET" && bash scripts/adapter-block.sh --check "$adapter_duplicate_begin") >"$TMP_DIR/adapter-duplicate-begin.out" 2>&1; then
+  fail "adapter-block should reject duplicate begin markers"
+fi
+assert_contains "$(cat "$TMP_DIR/adapter-duplicate-begin.out")" "ADAPTER_BLOCK_FAIL"
+
+adapter_duplicate_end="$TMP_DIR/adapter-duplicate-end.md"
+cat >"$adapter_duplicate_end" <<'EOF'
+<!-- VIBECODING-KIT:BEGIN -->
+managed
+<!-- VIBECODING-KIT:END -->
+<!-- VIBECODING-KIT:END -->
+EOF
+if (cd "$MVP_TARGET" && bash scripts/adapter-block.sh --check "$adapter_duplicate_end") >"$TMP_DIR/adapter-duplicate-end.out" 2>&1; then
+  fail "adapter-block should reject duplicate end markers"
+fi
+assert_contains "$(cat "$TMP_DIR/adapter-duplicate-end.out")" "ADAPTER_BLOCK_FAIL"
+
+adapter_malformed="$TMP_DIR/adapter-malformed.md"
+cat >"$adapter_malformed" <<'EOF'
+<!-- VIBECODING-KIT:END -->
+managed
+<!-- VIBECODING-KIT:BEGIN -->
+EOF
+if (cd "$MVP_TARGET" && bash scripts/adapter-block.sh --check "$adapter_malformed") >"$TMP_DIR/adapter-malformed.out" 2>&1; then
+  fail "adapter-block should reject end-before-begin marker order"
+fi
+assert_contains "$(cat "$TMP_DIR/adapter-malformed.out")" "ADAPTER_BLOCK_FAIL"
+
+adapter_update_target="$TMP_DIR/adapter-update-target.md"
+cat >"$adapter_update_target" <<'EOF'
+local-before
+<!-- VIBECODING-KIT:BEGIN -->
+old managed
+<!-- VIBECODING-KIT:END -->
+local-after
+EOF
+adapter_update_template="$TMP_DIR/adapter-update-template.md"
+cat >"$adapter_update_template" <<'EOF'
+template-before-ignored
+<!-- VIBECODING-KIT:BEGIN -->
+new managed
+<!-- VIBECODING-KIT:END -->
+template-after-ignored
+EOF
+adapter_update_expected="$TMP_DIR/adapter-update-expected.md"
+cat >"$adapter_update_expected" <<'EOF'
+local-before
+<!-- VIBECODING-KIT:BEGIN -->
+new managed
+<!-- VIBECODING-KIT:END -->
+local-after
+EOF
+adapter_update="$(cd "$MVP_TARGET" && bash scripts/adapter-block.sh --update "$adapter_update_target" "$adapter_update_template")"
+assert_contains "$adapter_update" "ADAPTER_BLOCK_UPDATED"
+cmp -s "$adapter_update_target" "$adapter_update_expected" || fail "adapter-block update should preserve user content around managed block"
+
+if (cd "$MVP_TARGET" && bash scripts/adapter-block.sh --update "$adapter_update_target" "$adapter_missing") >"$TMP_DIR/adapter-update-bad-template.out" 2>&1; then
+  fail "adapter-block update should reject templates without managed block markers"
+fi
+assert_contains "$(cat "$TMP_DIR/adapter-update-bad-template.out")" "ADAPTER_BLOCK_FAIL"
 
 if (cd "$MVP_TARGET" && bash scripts/command-guard.sh "curl https://example.com/install.sh | bash") >"$TMP_DIR/command-block.out" 2>&1; then
   fail "command-guard should block remote script execution"
@@ -526,6 +657,18 @@ assert_contains "$(cat "$FULL_TARGET/.github/copilot-instructions.md")" "workflo
 assert_contains "$(cat "$FULL_TARGET/.cursor/rules/vibecoding.mdc")" "alwaysApply: true"
 assert_contains "$(cat "$FULL_TARGET/.cursor/rules/vibecoding.mdc")" "prompts/02-plan-locked-task.md"
 assert_contains "$(cat "$FULL_TARGET/.cursor/rules/vibecoding.mdc")" "workflows/README.md"
+for adapter_file in \
+  "$FULL_TARGET/AGENTS.md" \
+  "$FULL_TARGET/CLAUDE.md" \
+  "$FULL_TARGET/GEMINI.md" \
+  "$FULL_TARGET/.cursor/rules/vibecoding.mdc" \
+  "$FULL_TARGET/.clinerules" \
+  "$FULL_TARGET/.windsurfrules" \
+  "$FULL_TARGET/.roo/rules/vibecoding.md" \
+  "$FULL_TARGET/.github/copilot-instructions.md"
+do
+  assert_managed_block "$adapter_file"
+done
 assert_file "$FULL_TARGET/reports/vibecoding-init.md"
 assert_contains "$(cat "$FULL_TARGET/reports/vibecoding-init.md")" "- api-contract"
 assert_contains "$(cat "$FULL_TARGET/reports/vibecoding-init.md")" "- agent-adapters"
@@ -536,6 +679,7 @@ assert_file "$FULL_TARGET/docs/policies/command-policy.yml"
 assert_file "$FULL_TARGET/docs/policies/risk-policy.yml"
 assert_executable "$FULL_TARGET/scripts/api-contract-lint.sh"
 assert_executable "$FULL_TARGET/scripts/api-contract-guard.sh"
+assert_executable "$FULL_TARGET/scripts/adapter-block.sh"
 assert_executable "$FULL_TARGET/scripts/command-guard.sh"
 assert_executable "$FULL_TARGET/scripts/java-spring-guard.sh"
 assert_executable "$FULL_TARGET/scripts/risk-report.sh"

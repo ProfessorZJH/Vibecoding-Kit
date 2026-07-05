@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # GitHub Copilot Instructions
 
 Use the vibecoding-kit protocol for every coding task.
@@ -36,3 +37,4 @@ Before claiming completion, run:
 bash scripts/drift-guard.sh
 bash scripts/task-closeout.sh T-xxx --write-report
 ```
+<!-- VIBECODING-KIT:END -->

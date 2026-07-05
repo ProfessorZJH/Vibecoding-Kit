@@ -3,6 +3,7 @@ description: Vibecoding project operating protocol
 alwaysApply: true
 ---
 
+<!-- VIBECODING-KIT:BEGIN -->
 # Vibecoding Protocol
 
 Cursor must use repository files as the source of truth.
@@ -40,3 +41,4 @@ Before completion, run:
 bash scripts/drift-guard.sh
 bash scripts/task-closeout.sh T-xxx --write-report
 ```
+<!-- VIBECODING-KIT:END -->

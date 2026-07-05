@@ -1,3 +1,4 @@
+<!-- VIBECODING-KIT:BEGIN -->
 # Vibecoding Protocol
 
 Windsurf must use repository files as the source of truth.
@@ -30,3 +31,4 @@ Completion:
 - Run `bash scripts/drift-guard.sh`.
 - Run `bash scripts/task-closeout.sh T-xxx --write-report`.
 - Report commit and push checkpoints.
+<!-- VIBECODING-KIT:END -->
