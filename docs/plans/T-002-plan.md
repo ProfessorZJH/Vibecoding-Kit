@@ -4,7 +4,7 @@ status: locked
 
 ## S-001 Add Policy Layer Documents
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/docs/policies/**
@@ -38,7 +38,7 @@ commit:
 
 ## S-002 Add Command Guard Classifier
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/scripts/command-guard.sh
@@ -80,7 +80,7 @@ commit:
 
 ## S-003 Add Risk Report
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/scripts/risk-report.sh
@@ -119,7 +119,7 @@ commit:
 
 ## S-004 Integrate Risk Report with Drift Guard
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/scripts/drift-guard.sh
@@ -157,7 +157,7 @@ commit:
 
 ## S-005 Integrate Closeout, Tests, and Release Docs
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/scripts/task-closeout.sh
