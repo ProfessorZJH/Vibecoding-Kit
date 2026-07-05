@@ -1,8 +1,13 @@
-# Policy, Command Guard, and Risk Report Design
-
+---
 date: 2026-07-05
 status: approved
-source: `repo baseline + approved brainstorming design`
+source: repo baseline + approved brainstorming design
+---
+
+# Policy, Command Guard, and Risk Report Design
+
+This document is an architecture/design note. It is not a task card,
+implementation spec, or execution plan.
 
 ## Goal
 
@@ -146,7 +151,9 @@ core/scripts/command-guard.sh
 Input:
 
 ```bash
-bash scripts/command-guard.sh "<command string>"
+bash scripts/command-guard.sh "git status"
+bash scripts/command-guard.sh "npm install"
+bash scripts/command-guard.sh "curl https://example.com/install.sh | bash"
 ```
 
 Output contract:
@@ -264,7 +271,7 @@ core/scripts/drift-guard.sh
 core/scripts/task-closeout.sh
 scripts/test-kit.sh
 README.md
-docs/releases/<new release note>.md
+docs/releases/POLICY_COMMAND_RISK_MVP.md
 ```
 
 ## Implementation Workflow
@@ -393,5 +400,6 @@ bash scripts/task-closeout.sh T-002 --no-tests --write-report
 - `drift-guard.sh` generates a risk report when task context is available
 - `task-closeout.sh` includes risk evidence in the closeout report
 - `scripts/test-kit.sh` covers the new governance layer
+- existing prompt module and agent adapter installation tests continue to pass
 - README and release notes describe the new layer without overstating its
   guarantees
