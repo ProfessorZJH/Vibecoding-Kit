@@ -12,6 +12,14 @@ It is not a business system. It is a reusable development template for new
 projects that use Codex, Claude Code, Superpowers, Cursor, Cline, Roo,
 Windsurf, Gemini, GitHub Copilot, or other AI coding agents.
 
+## Project Positioning
+
+Vibecoding Kit is not a new coding model and not a business application. It is
+the repository-level governance layer around AI-assisted development: the
+repository stores the current task, current step, plan lock, policy boundaries,
+and closeout evidence, while guard scripts verify whether the agent stayed
+inside that contract.
+
 ## What This Solves
 
 AI agents drift when their native plan, chat context, repository state, and
@@ -192,6 +200,7 @@ bash scripts/install-git-hooks.sh
 ## Documentation
 
 - [Template Handbook](docs/TEMPLATE_HANDBOOK.md)
+- [Positioning and Talk Track](docs/POSITIONING.md)
 - [Plan Engine MVP](docs/releases/PLAN_ENGINE_MVP.md)
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [v0.1.0 Release Notes](docs/releases/v0.1.0.md)
