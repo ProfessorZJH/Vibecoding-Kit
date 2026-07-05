@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.0 - 2026-07-05
+
+- Added modular Vibecoding prompt modules and routed agent adapter entry files
+  to the shared prompt layer.
+- Added governance policy documents for paths, command classes, and file-change
+  risk levels.
+- Added `command-guard.sh`, `risk-report.sh`, and their drift/closeout
+  integrations for repository-level AI agent governance evidence.
+- Added release notes for the Governance MVP package.
+
 ## v0.1.0 - 2026-07-04
 
 - Added a runnable AI drift demo that proves `plan-guard.sh` blocks an
@@ -11,6 +21,4 @@
 
 ## Unreleased
 
-- Added modular Vibecoding agent prompt modules and routed agent adapter entry
-  files to the shared prompt layer.
 - TypeScript CLI wrapper is planned after the demo and CI path are stable.
