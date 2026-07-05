@@ -43,7 +43,7 @@ commit:
 
 ## S-002 Add Failing Managed Block Tests
 
-status: pending
+status: completed
 
 allowed_changes:
 - scripts/test-kit.sh
@@ -81,7 +81,7 @@ commit:
 
 ## S-003 Implement Adapter Block Script and Markers
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/scripts/adapter-block.sh
@@ -123,7 +123,7 @@ commit:
 
 ## S-004 Document Release Boundary
 
-status: pending
+status: completed
 
 allowed_changes:
 - README.md
@@ -163,7 +163,7 @@ commit:
 
 ## S-005 Verify and Close Out T-004
 
-status: pending
+status: completed
 
 allowed_changes:
 - docs/plans/T-004-plan.md
