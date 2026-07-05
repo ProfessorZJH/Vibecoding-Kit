@@ -1,0 +1,28 @@
+risk_levels:
+  LOW:
+    - "src/**"
+    - "test/**"
+    - "docs/**"
+
+  MEDIUM:
+    - "scripts/**"
+    - "core/prompts/**"
+    - "profiles/**"
+
+  HIGH:
+    - "pom.xml"
+    - "package.json"
+    - "pnpm-lock.yaml"
+    - "Dockerfile"
+    - ".github/workflows/**"
+    - ".gitcode/workflows/**"
+    - "src/main/resources/application*.yml"
+    - "db/migration/**"
+
+  CRITICAL:
+    - ".env"
+    - ".env.*"
+    - "*.pem"
+    - "*.key"
+    - "id_rsa"
+    - "id_ed25519"
