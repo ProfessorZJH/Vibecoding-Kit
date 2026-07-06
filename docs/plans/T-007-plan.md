@@ -43,7 +43,7 @@ commit:
 
 ## S-002 Add Failing Generated Demo Coverage
 
-status: pending
+status: completed
 
 allowed_changes:
 - scripts/test-kit.sh
@@ -84,7 +84,7 @@ commit:
 
 ## S-003 Add Generated Project Demo
 
-status: pending
+status: completed
 
 allowed_changes:
 - examples/generated-project-demo/**
@@ -131,7 +131,7 @@ commit:
 
 ## S-004 Wire README and v0.6.0 Release Notes
 
-status: pending
+status: completed
 
 allowed_changes:
 - README.md
@@ -171,7 +171,7 @@ commit:
 
 ## S-005 Verify and Close Out T-007
 
-status: pending
+status: completed
 
 allowed_changes:
 - docs/plans/T-007-plan.md
