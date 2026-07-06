@@ -1,0 +1,16 @@
+current_task: T-010
+mode: demo
+workflow_status: implementation
+requirements_status: approved
+design_status: approved
+plan_status: locked
+current_step: S-001
+require_plan_guard: false
+require_step_commit: false
+plan_change_status: none
+plan_hash: __PLAN_HASH__
+require_commit: false
+require_push: false
+protected_branches:
+  - main
+  - master

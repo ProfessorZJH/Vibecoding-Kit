@@ -17,3 +17,6 @@ Run these demos from the repository root.
 - Generated Project Demo
   - Shows: install-to-target smoke flow with preflight, drift, risk, and closeout
   - Run: `bash examples/generated-project-demo/run-demo.sh`
+- Java Service Governance Demo
+  - Shows: backend service task boundaries and runtime config drift detection
+  - Run: `bash examples/java-service-governance-demo/run-demo.sh`

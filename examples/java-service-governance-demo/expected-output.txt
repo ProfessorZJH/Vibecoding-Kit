@@ -1,0 +1,11 @@
+DEMO_STEP fixture_prepared
+DEMO_STEP service_change_allowed
+PLAN_GUARD_PASS
+DEMO_STEP unauthorized_file_detected
+PLAN_GUARD_FAIL: unauthorized file
+src/main/resources/application.yml
+DEMO_STEP runtime_config_change_detected
+overall_risk: HIGH
+DEMO_STEP closeout_report_written
+closeout_report: reports/ai-closeout/T-010.md
+DEMO_PASS

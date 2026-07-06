@@ -60,6 +60,9 @@ Run the demos:
 - Generated Project Demo
   - Shows: install-to-target smoke flow with preflight, drift, risk, and closeout
   - Run: `bash examples/generated-project-demo/run-demo.sh`
+- Java Service Governance Demo
+  - Shows: backend service task boundaries and runtime config drift detection
+  - Run: `bash examples/java-service-governance-demo/run-demo.sh`
 
 Together, these demos show the governance loop:
 
@@ -68,6 +71,11 @@ Together, these demos show the governance loop:
 - risky file changes are reported
 - adapter updates preserve user-owned content
 - generated projects can run the installed governance loop
+- Java backend service changes can be audited against task boundaries
+
+The Java service demo shows how Vibecoding Kit catches AI-assisted changes that
+drift outside a backend task boundary, such as runtime configuration or
+dependency edits.
 
 ## Quick Start
 
@@ -240,6 +248,7 @@ bash scripts/install-git-hooks.sh
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [Workflow Layer](core/workflows/README.md)
 - [Managed Adapter Blocks](docs/adapter-managed-blocks.md)
+- [v0.8.0 Release Notes](docs/releases/v0.8.0.md)
 - [v0.7.0 Release Notes](docs/releases/v0.7.0.md)
 - [v0.6.0 Release Notes](docs/releases/v0.6.0.md)
 - [v0.5.0 Release Notes](docs/releases/v0.5.0.md)
