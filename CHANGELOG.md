@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.7.0 - Installer UX Hardening
+
+Added:
+
+- Installer dry-run mode with stable create, skip, and conflict output.
+- Installed generated-project doctor script at `scripts/ai-doctor.sh`.
+- Repeat install safety for identical files and user-modified conflicts.
+- test-kit coverage for dry-run, doctor, repeat install, and conflict
+  preservation.
+- README installer verification commands.
+- v0.7.0 release notes.
+
+Unchanged:
+
+- No new CLI.
+- No YAML parser.
+- No guard semantic changes.
+- No risk report blocking semantic changes.
+- No automatic adapter sync.
+- No network-dependent installer behavior.
+
 ## v0.6.0 - Generated Project Smoke Demo
 
 Added:

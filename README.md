@@ -83,6 +83,28 @@ bash installer/init.sh \
   --ci none
 ```
 
+Preview the install plan before writing files:
+
+```bash
+bash installer/init.sh \
+  --dry-run \
+  --target /path/to/project \
+  --name my-project \
+  --profile agent-adapters \
+  --ci none
+```
+
+After installation, run the generated project doctor from the target project:
+
+```bash
+cd /path/to/project
+bash scripts/ai-doctor.sh
+```
+
+The installer is safe to rerun. Identical generated files are skipped, and
+existing files with different content are reported as install conflicts instead
+of being overwritten.
+
 For a Java/Spring + Vue + DDD finance project:
 
 ```bash
@@ -191,6 +213,7 @@ bash scripts/test-kit.sh
 ## Generated Project Commands
 
 ```bash
+bash scripts/ai-doctor.sh
 bash scripts/ai-preflight.sh T-000
 bash scripts/drift-guard.sh
 bash scripts/task-closeout.sh T-000 --no-tests --write-report
@@ -206,6 +229,7 @@ bash scripts/install-git-hooks.sh
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [Workflow Layer](core/workflows/README.md)
 - [Managed Adapter Blocks](docs/adapter-managed-blocks.md)
+- [v0.7.0 Release Notes](docs/releases/v0.7.0.md)
 - [v0.6.0 Release Notes](docs/releases/v0.6.0.md)
 - [v0.5.0 Release Notes](docs/releases/v0.5.0.md)
 - [v0.4.0 Release Notes](docs/releases/v0.4.0.md)
