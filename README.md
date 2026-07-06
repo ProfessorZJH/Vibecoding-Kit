@@ -41,30 +41,23 @@ truth:
 The template does not make an AI perfect. It gives the project a way to detect,
 block, and audit plan drift.
 
-## 30-Second Demo
+## 30-Second Demos
 
-Run the drift demo:
+Run the demos:
 
-```bash
-bash examples/ai-drift-demo/run-demo.sh
-```
+| Demo | Shows | Command |
+| --- | --- | --- |
+| AI Drift Demo | plan drift detection and relock flow | `bash examples/ai-drift-demo/run-demo.sh` |
+| Command Risk Demo | allow, require_approval, and block command classification | `bash examples/command-risk-demo/run-demo.sh` |
+| Risk Report Demo | HIGH risk evidence for runtime configuration changes | `bash examples/risk-report-demo/run-demo.sh` |
+| Adapter Block Demo | managed adapter block updates that preserve user content | `bash examples/adapter-block-demo/run-demo.sh` |
 
-The demo locks a plan step to one Java service file, then simulates an AI agent
-also editing runtime configuration. The guard blocks the out-of-plan file:
+Together, these demos show the governance loop:
 
-```txt
-DEMO_STEP unauthorized_change_blocked
-PLAN_GUARD_FAIL: unauthorized file
-src/main/resources/application.yml
-```
-
-After the plan is intentionally updated and relocked, the task can close out:
-
-```txt
-DEMO_STEP relocked_after_plan_update
-DEMO_STEP closeout_report_written
-DEMO_PASS
-```
+- plan drift is blocked
+- risky commands are classified
+- risky file changes are reported
+- adapter updates preserve user-owned content
 
 ## Quick Start
 
@@ -211,6 +204,7 @@ bash scripts/install-git-hooks.sh
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [Workflow Layer](core/workflows/README.md)
 - [Managed Adapter Blocks](docs/adapter-managed-blocks.md)
+- [v0.5.0 Release Notes](docs/releases/v0.5.0.md)
 - [v0.4.0 Release Notes](docs/releases/v0.4.0.md)
 - [v0.3.0 Release Notes](docs/releases/v0.3.0.md)
 - [v0.2.0 Release Notes](docs/releases/v0.2.0.md)
