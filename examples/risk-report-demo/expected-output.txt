@@ -1,0 +1,4 @@
+DEMO_STEP runtime_config_changed
+DEMO_STEP risk_report_written
+overall_risk: HIGH
+DEMO_PASS

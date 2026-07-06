@@ -1,0 +1,9 @@
+DEMO_STEP safe_readonly_command
+COMMAND_GUARD_PASS
+decision: allow
+DEMO_STEP approval_required_command
+decision: require_approval
+DEMO_STEP blocked_remote_script
+COMMAND_GUARD_FAIL
+decision: block
+DEMO_PASS
