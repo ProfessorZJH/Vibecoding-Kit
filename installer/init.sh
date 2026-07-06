@@ -179,8 +179,18 @@ build_payload() {
   copy_tree "$KIT_ROOT/core" "$staging"
   replace_project_name
 
-  installed_at="$(yaml_scalar_or_default "$existing_version_file" "installed_at" "$(date -u +%Y-%m-%dT%H:%M:%SZ)")"
-  source_commit="$(yaml_scalar_or_default "$existing_version_file" "source_commit" "$(git -C "$KIT_ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown)")"
+  installed_at="$(
+    yaml_scalar_or_default \
+      "$existing_version_file" \
+      "installed_at" \
+      "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  )"
+  source_commit="$(
+    yaml_scalar_or_default \
+      "$existing_version_file" \
+      "source_commit" \
+      "$(git -C "$KIT_ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+  )"
   sed -i \
     -e "s/__INSTALLED_AT__/${installed_at}/g" \
     -e "s/__SOURCE_COMMIT__/${source_commit}/g" \
@@ -194,7 +204,9 @@ build_payload() {
         copy_tree "$KIT_ROOT/profiles/ddd/docs" "$staging/docs"
         copy_tree "$KIT_ROOT/profiles/ddd/scripts" "$staging/scripts"
         mkdir -p "$staging/docs/reference/xfg-ddd-scaffold-lite-jdk17"
-        copy_tree "$KIT_ROOT/profiles/ddd/xfg-archetype" "$staging/docs/reference/xfg-ddd-scaffold-lite-jdk17"
+        copy_tree \
+          "$KIT_ROOT/profiles/ddd/xfg-archetype" \
+          "$staging/docs/reference/xfg-ddd-scaffold-lite-jdk17"
         ;;
       finance)
         copy_tree "$KIT_ROOT/profiles/finance/docs" "$staging/docs"
@@ -256,11 +268,15 @@ build_payload() {
         ;;
       gitcode)
         mkdir -p "$staging/.gitcode/workflows"
-        cp "$KIT_ROOT/core/workflows/gitcode/ai-guard.yml" "$staging/.gitcode/workflows/ai-guard.yml"
+        cp \
+          "$KIT_ROOT/core/workflows/gitcode/ai-guard.yml" \
+          "$staging/.gitcode/workflows/ai-guard.yml"
         ;;
       github)
         mkdir -p "$staging/.github/workflows"
-        cp "$KIT_ROOT/core/workflows/github/ai-guard.yml" "$staging/.github/workflows/ai-guard.yml"
+        cp \
+          "$KIT_ROOT/core/workflows/github/ai-guard.yml" \
+          "$staging/.github/workflows/ai-guard.yml"
         ;;
       *)
         echo "unknown ci: $ci" >&2

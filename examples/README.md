@@ -2,10 +2,18 @@
 
 Run these demos from the repository root.
 
-| Demo | Shows | Command |
-| --- | --- | --- |
-| AI Drift Demo | plan drift detection and relock flow | `bash examples/ai-drift-demo/run-demo.sh` |
-| Command Risk Demo | allow, require_approval, and block command classifications | `bash examples/command-risk-demo/run-demo.sh` |
-| Risk Report Demo | HIGH risk evidence for runtime configuration changes | `bash examples/risk-report-demo/run-demo.sh` |
-| Adapter Block Demo | managed adapter block updates that preserve user content | `bash examples/adapter-block-demo/run-demo.sh` |
-| Generated Project Demo | install-to-target smoke flow with preflight, drift, risk, and closeout | `bash examples/generated-project-demo/run-demo.sh` |
+- AI Drift Demo
+  - Shows: plan drift detection and relock flow
+  - Run: `bash examples/ai-drift-demo/run-demo.sh`
+- Command Risk Demo
+  - Shows: allow, require_approval, and block command classifications
+  - Run: `bash examples/command-risk-demo/run-demo.sh`
+- Risk Report Demo
+  - Shows: HIGH risk evidence for runtime configuration changes
+  - Run: `bash examples/risk-report-demo/run-demo.sh`
+- Adapter Block Demo
+  - Shows: managed adapter block updates that preserve user content
+  - Run: `bash examples/adapter-block-demo/run-demo.sh`
+- Generated Project Demo
+  - Shows: install-to-target smoke flow with preflight, drift, risk, and closeout
+  - Run: `bash examples/generated-project-demo/run-demo.sh`

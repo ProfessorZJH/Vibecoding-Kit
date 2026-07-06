@@ -113,7 +113,13 @@ forbidden_changes:
 
 commands:
 - bash -n installer/init.sh
-- bash installer/init.sh --dry-run --target /tmp/vibecoding-kit-dry-run --name dry-run-demo --profile agent-adapters --ci none
+- |
+  bash installer/init.sh \
+    --dry-run \
+    --target /tmp/vibecoding-kit-dry-run \
+    --name dry-run-demo \
+    --profile agent-adapters \
+    --ci none
 
 expected:
 - dry-run prints VIBECODING_KIT_DRY_RUN and DRY_RUN_PASS
@@ -237,7 +243,13 @@ commands:
 - bash -n installer/init.sh
 - bash -n core/scripts/ai-doctor.sh
 - bash -n scripts/test-kit.sh
-- bash installer/init.sh --dry-run --target /tmp/vibecoding-kit-dry-run --name dry-run-demo --profile agent-adapters --ci none
+- |
+  bash installer/init.sh \
+    --dry-run \
+    --target /tmp/vibecoding-kit-dry-run \
+    --name dry-run-demo \
+    --profile agent-adapters \
+    --ci none
 - bash scripts/test-kit.sh
 
 expected:

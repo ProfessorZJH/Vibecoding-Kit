@@ -6,6 +6,12 @@ TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 TARGET="$TMP_DIR/generated-project-demo"
+preflight_lines_pattern='^(PRECHECK|current_task: T-000|task_card: docs/tasks/T-000.md)$'
+drift_lines_pattern='^(TASK_CARD_LINT_PASS|PLAN_GUARD_PASS|SECRETS_GUARD_PASS|DRIFT_GUARD_PASS)$'
+closeout_lines_pattern='^(CLOSEOUT|plan_guard: PLAN_GUARD_PASS S-001'
+closeout_lines_pattern+='|risk_report: reports/ai-risk/T-000-risk-report.md'
+closeout_lines_pattern+='|git_checkpoint: COMMIT_CHECKPOINT'
+closeout_lines_pattern+='|closeout_report: reports/ai-closeout/T-000.md)'
 
 say() {
   printf '%s\n' "$*"
@@ -69,7 +75,7 @@ assert_contains "$preflight_output" "current_task: T-000"
 assert_contains "$preflight_output" "task_card: docs/tasks/T-000.md"
 
 say "DEMO_STEP preflight_passed"
-print_matching_lines "$preflight_output" '^(PRECHECK|current_task: T-000|task_card: docs/tasks/T-000.md)$'
+print_matching_lines "$preflight_output" "$preflight_lines_pattern"
 
 drift_output="$(cd "$TARGET" && bash scripts/drift-guard.sh)"
 assert_contains "$drift_output" "TASK_CARD_LINT_PASS"
@@ -81,7 +87,7 @@ assert_file "$TARGET/reports/ai-risk/T-000-risk-report.json"
 assert_contains "$(cat "$TARGET/reports/ai-risk/T-000-risk-report.md")" "- overall_risk:"
 
 say "DEMO_STEP drift_and_risk_checked"
-print_matching_lines "$drift_output" '^(TASK_CARD_LINT_PASS|PLAN_GUARD_PASS|SECRETS_GUARD_PASS|DRIFT_GUARD_PASS)$'
+print_matching_lines "$drift_output" "$drift_lines_pattern"
 say "risk_report: reports/ai-risk/T-000-risk-report.md"
 
 git -C "$TARGET" add .
@@ -97,17 +103,22 @@ assert_contains "$commit_subject" "commit_subject: T-000: initialize generated p
 say "DEMO_STEP commit_checkpoint_created"
 say "$commit_subject"
 
-closeout_output="$(cd "$TARGET" && bash scripts/task-closeout.sh T-000 --no-tests --write-report)"
+closeout_output="$(
+  cd "$TARGET" &&
+    bash scripts/task-closeout.sh T-000 --no-tests --write-report
+)"
 assert_contains "$closeout_output" "CLOSEOUT"
 assert_contains "$closeout_output" "plan_guard: PLAN_GUARD_PASS S-001"
 assert_contains "$closeout_output" "risk_report: reports/ai-risk/T-000-risk-report.md"
 assert_contains "$closeout_output" "git_checkpoint: COMMIT_CHECKPOINT"
 assert_contains "$closeout_output" "closeout_report: reports/ai-closeout/T-000.md"
 assert_file "$TARGET/reports/ai-closeout/T-000.md"
-assert_contains "$(cat "$TARGET/reports/ai-closeout/T-000.md")" "- plan_guard: PLAN_GUARD_PASS S-001"
+assert_contains \
+  "$(cat "$TARGET/reports/ai-closeout/T-000.md")" \
+  "- plan_guard: PLAN_GUARD_PASS S-001"
 assert_contains "$(cat "$TARGET/reports/ai-closeout/T-000.md")" "## Risk Report"
 
 say "DEMO_STEP closeout_report_written"
-print_matching_lines "$closeout_output" '^(CLOSEOUT|plan_guard: PLAN_GUARD_PASS S-001|risk_report: reports/ai-risk/T-000-risk-report.md|git_checkpoint: COMMIT_CHECKPOINT|closeout_report: reports/ai-closeout/T-000.md)'
+print_matching_lines "$closeout_output" "$closeout_lines_pattern"
 
 say "DEMO_PASS"
