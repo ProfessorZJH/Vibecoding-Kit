@@ -1,0 +1,15 @@
+DEMO_STEP generated_project_installed
+DEMO_STEP generated_files_verified
+DEMO_STEP preflight_passed
+PRECHECK
+current_task: T-000
+DEMO_STEP drift_and_risk_checked
+DRIFT_GUARD_PASS
+risk_report: reports/ai-risk/T-000-risk-report.md
+DEMO_STEP commit_checkpoint_created
+commit_subject: T-000: initialize generated project demo
+DEMO_STEP closeout_report_written
+CLOSEOUT
+plan_guard: PLAN_GUARD_PASS S-001
+closeout_report: reports/ai-closeout/T-000.md
+DEMO_PASS

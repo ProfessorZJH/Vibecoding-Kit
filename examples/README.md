@@ -8,3 +8,4 @@ Run these demos from the repository root.
 | Command Risk Demo | allow, require_approval, and block command classifications | `bash examples/command-risk-demo/run-demo.sh` |
 | Risk Report Demo | HIGH risk evidence for runtime configuration changes | `bash examples/risk-report-demo/run-demo.sh` |
 | Adapter Block Demo | managed adapter block updates that preserve user content | `bash examples/adapter-block-demo/run-demo.sh` |
+| Generated Project Demo | install-to-target smoke flow with preflight, drift, risk, and closeout | `bash examples/generated-project-demo/run-demo.sh` |
