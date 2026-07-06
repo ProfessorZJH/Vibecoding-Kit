@@ -170,3 +170,53 @@ expected:
 
 commit:
 - required
+
+## S-005 Recheck Markdown Readability
+
+status: completed
+
+allowed_changes:
+- docs/tasks/T-006.md
+- docs/plans/T-006-plan.md
+
+forbidden_changes:
+- README.md
+- examples/README.md
+- CHANGELOG.md
+- docs/releases/v0.5.0.md
+- core/scripts/**
+- scripts/test-kit.sh
+- installer/**
+- profiles/**
+- examples/*/run-demo.sh
+- docs/policies/**
+- .env*
+- target/**
+- build/**
+- dist/**
+- node_modules/**
+- .m2home/**
+- .idea/**
+
+commands:
+- wc -l README.md examples/README.md CHANGELOG.md docs/releases/v0.5.0.md
+- curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/ProfessorZJH/Vibecoding-Kit/master/README.md?cachebust=20260706 | wc -l
+- curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/ProfessorZJH/Vibecoding-Kit/master/examples/README.md?cachebust=20260706 | wc -l
+- curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/ProfessorZJH/Vibecoding-Kit/master/CHANGELOG.md?cachebust=20260706 | wc -l
+- curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/ProfessorZJH/Vibecoding-Kit/master/docs/releases/v0.5.0.md?cachebust=20260706 | wc -l
+- git show origin/master:README.md | wc -l
+- git show origin/master:examples/README.md | wc -l
+- git show origin/master:CHANGELOG.md | wc -l
+- git show origin/master:docs/releases/v0.5.0.md | wc -l
+- git ls-tree origin/master README.md examples/README.md CHANGELOG.md docs/releases/v0.5.0.md
+
+expected:
+- README.md is 216 lines locally and on remote raw
+- examples/README.md is 10 lines locally and on remote raw
+- CHANGELOG.md is 51 lines locally and on remote raw
+- docs/releases/v0.5.0.md is 52 lines locally and on remote raw
+- README and examples index still list all four demo commands
+- no README, examples index, changelog, or release note rewrite is required
+
+commit:
+- required
