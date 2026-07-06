@@ -241,6 +241,64 @@ assert_contains "$generated_project_demo_output" "DEMO_PASS"
 help_text="$(bash installer/init.sh --help)"
 assert_contains "$help_text" "api-contract"
 assert_contains "$help_text" "agent-adapters"
+assert_contains "$help_text" "--dry-run"
+
+INSTALLER_UX_TARGET="$TMP_DIR/installer-ux-project"
+INSTALLER_UX_DRY_RUN_TARGET="$TMP_DIR/installer-ux-dry-run-project"
+
+dry_run_output="$(bash installer/init.sh \
+  --dry-run \
+  --target "$INSTALLER_UX_DRY_RUN_TARGET" \
+  --name dry-run-demo \
+  --profile agent-adapters \
+  --ci none)"
+assert_contains "$dry_run_output" "VIBECODING_KIT_DRY_RUN"
+assert_contains "$dry_run_output" "project: dry-run-demo"
+assert_contains "$dry_run_output" "profiles: agent-adapters"
+assert_contains "$dry_run_output" "ci: none"
+assert_contains "$dry_run_output" "will_create:"
+assert_contains "$dry_run_output" "docs/AI_STATE.yml"
+assert_contains "$dry_run_output" "scripts/ai-preflight.sh"
+assert_contains "$dry_run_output" "scripts/ai-doctor.sh"
+assert_contains "$dry_run_output" "DRY_RUN_PASS"
+[[ ! -e "$INSTALLER_UX_DRY_RUN_TARGET" ]] || fail "installer dry-run should not create target"
+
+installer_ux_first="$(bash installer/init.sh \
+  --target "$INSTALLER_UX_TARGET" \
+  --name installer-ux-demo \
+  --profile agent-adapters \
+  --ci none)"
+assert_contains "$installer_ux_first" "VIBECODING_KIT_INIT_PASS"
+assert_executable "$INSTALLER_UX_TARGET/scripts/ai-doctor.sh"
+
+doctor_output="$(cd "$INSTALLER_UX_TARGET" && bash scripts/ai-doctor.sh)"
+assert_contains "$doctor_output" "DOCTOR"
+assert_contains "$doctor_output" "docs/AI_STATE.yml: ok"
+assert_contains "$doctor_output" "scripts/ai-preflight.sh: executable"
+assert_contains "$doctor_output" "scripts/drift-guard.sh: executable"
+assert_contains "$doctor_output" "scripts/task-closeout.sh: executable"
+assert_contains "$doctor_output" "DOCTOR_PASS"
+
+installer_ux_second="$(bash installer/init.sh \
+  --target "$INSTALLER_UX_TARGET" \
+  --name installer-ux-demo \
+  --profile agent-adapters \
+  --ci none)"
+assert_contains "$installer_ux_second" "VIBECODING_KIT_INIT_PASS"
+assert_contains "$installer_ux_second" "will_skip_existing:"
+
+printf 'user local edits must remain\n' >"$INSTALLER_UX_TARGET/AGENTS.md"
+if bash installer/init.sh \
+  --target "$INSTALLER_UX_TARGET" \
+  --name installer-ux-demo \
+  --profile agent-adapters \
+  --ci none >"$TMP_DIR/installer-conflict.out" 2>&1; then
+  fail "installer should fail when repeat install would overwrite user-modified file"
+fi
+assert_contains "$(cat "$TMP_DIR/installer-conflict.out")" "VIBECODING_KIT_INSTALL_CONFLICT"
+assert_contains "$(cat "$TMP_DIR/installer-conflict.out")" "will_conflict:"
+assert_contains "$(cat "$TMP_DIR/installer-conflict.out")" "AGENTS.md"
+assert_contains "$(cat "$INSTALLER_UX_TARGET/AGENTS.md")" "user local edits must remain"
 
 bash installer/init.sh \
   --target "$MVP_TARGET" \
