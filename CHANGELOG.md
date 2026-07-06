@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.6.0 - Generated Project Smoke Demo
+
+Added:
+
+- Generated project smoke demo.
+- Generated project expected-output contract.
+- README demo matrix entry for generated project onboarding.
+- Examples index entry for the generated project demo.
+- test-kit coverage for generated project demo execution and documentation
+  references.
+- v0.6.0 release notes.
+
+Unchanged:
+
+- No new CLI.
+- No installer semantic changes.
+- No guard semantic changes.
+- No automatic adapter sync.
+- No network-dependent demo execution.
+
 ## v0.5.0 - Governance Demos and UX Polish
 
 Added:

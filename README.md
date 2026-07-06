@@ -51,6 +51,7 @@ Run the demos:
 | Command Risk Demo | allow, require_approval, and block command classification | `bash examples/command-risk-demo/run-demo.sh` |
 | Risk Report Demo | HIGH risk evidence for runtime configuration changes | `bash examples/risk-report-demo/run-demo.sh` |
 | Adapter Block Demo | managed adapter block updates that preserve user content | `bash examples/adapter-block-demo/run-demo.sh` |
+| Generated Project Demo | install-to-target smoke flow with preflight, drift, risk, and closeout | `bash examples/generated-project-demo/run-demo.sh` |
 
 Together, these demos show the governance loop:
 
@@ -58,6 +59,7 @@ Together, these demos show the governance loop:
 - risky commands are classified
 - risky file changes are reported
 - adapter updates preserve user-owned content
+- generated projects can run the installed governance loop
 
 ## Quick Start
 
@@ -204,6 +206,7 @@ bash scripts/install-git-hooks.sh
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [Workflow Layer](core/workflows/README.md)
 - [Managed Adapter Blocks](docs/adapter-managed-blocks.md)
+- [v0.6.0 Release Notes](docs/releases/v0.6.0.md)
 - [v0.5.0 Release Notes](docs/releases/v0.5.0.md)
 - [v0.4.0 Release Notes](docs/releases/v0.4.0.md)
 - [v0.3.0 Release Notes](docs/releases/v0.3.0.md)
