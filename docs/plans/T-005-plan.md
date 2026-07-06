@@ -41,7 +41,7 @@ commit:
 
 ## S-002 Add Failing Demo Coverage
 
-status: pending
+status: completed
 
 allowed_changes:
 - scripts/test-kit.sh
@@ -78,7 +78,7 @@ commit:
 
 ## S-003 Add Command and Risk Report Demos
 
-status: pending
+status: completed
 
 allowed_changes:
 - examples/command-risk-demo/**
@@ -122,7 +122,7 @@ commit:
 
 ## S-004 Add Adapter Block Demo and Examples Index
 
-status: pending
+status: completed
 
 allowed_changes:
 - examples/adapter-block-demo/**
@@ -164,7 +164,7 @@ commit:
 
 ## S-005 Wire README and v0.5.0 Release Notes
 
-status: pending
+status: completed
 
 allowed_changes:
 - README.md
@@ -201,7 +201,7 @@ commit:
 
 ## S-006 Verify and Close Out T-005
 
-status: pending
+status: completed
 
 allowed_changes:
 - docs/plans/T-005-plan.md
