@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.5.0 - Governance Demos and UX Polish
+
+Added:
+
+- Command risk demo.
+- Risk report demo.
+- Adapter block demo.
+- Examples index.
+- README demo matrix.
+- test-kit coverage for all governance demos.
+
+Unchanged:
+
+- No new CLI.
+- No guard semantic changes.
+- No automatic adapter sync.
+- No network-dependent demo execution.
+
 ## v0.3.0 - 2026-07-05
 
 - Added reusable workflow documents for project scan, task creation, plan lock,
