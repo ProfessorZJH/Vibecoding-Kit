@@ -1,0 +1,4 @@
+DEMO_STEP check_valid_block
+DEMO_STEP update_managed_block
+DEMO_STEP user_content_preserved
+DEMO_PASS
