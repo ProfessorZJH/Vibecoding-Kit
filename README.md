@@ -77,6 +77,10 @@ The Java service demo shows how Vibecoding Kit catches AI-assisted changes that
 drift outside a backend task boundary, such as runtime configuration or
 dependency edits.
 
+For resume and interview use, the Java backend governance demo is the clearest
+story: a service-layer task stays allowed, while runtime configuration drift is
+detected, reported as HIGH risk evidence, and captured in closeout output.
+
 ## Quick Start
 
 ```bash
@@ -244,6 +248,7 @@ bash scripts/install-git-hooks.sh
 - [Template Handbook](docs/TEMPLATE_HANDBOOK.md)
 - [Positioning and Talk Track](docs/POSITIONING.md)
 - [Chinese Interview Talk Track](docs/INTERVIEW_CN.md)
+- [Resume and Interview Notes](docs/RESUME_AND_INTERVIEW.md)
 - [Plan Engine MVP](docs/releases/PLAN_ENGINE_MVP.md)
 - [Policy, Command Guard, and Risk Report MVP](docs/releases/POLICY_COMMAND_RISK_MVP.md)
 - [Workflow Layer](core/workflows/README.md)

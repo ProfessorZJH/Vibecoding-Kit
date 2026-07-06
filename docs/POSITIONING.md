@@ -40,6 +40,9 @@ behavior.
 - Wrote integration tests and demos that install temporary sample projects and
   verify both positive paths and drift failures such as unlocked plans,
   out-of-scope file edits, missing checkpoints, and blocked high-risk commands.
+- Added a Java service governance demo that shows how a backend task limited to
+  a service file can detect drift into runtime configuration or dependency
+  sensitive paths.
 
 ## Interview Version
 
@@ -78,6 +81,14 @@ I explain the project in four layers:
 
 The important design choice is that prompt instructions are soft constraints.
 The hard constraints live in repository files and guard scripts.
+
+### Java Backend Demo Framing
+
+The Java service governance demo is the most interview-ready example. It uses a
+Spring-style order service fixture where the task allows `OrderService.java` and
+forbids `application.yml`, `pom.xml`, and the controller. The demo then shows
+the existing guard, risk report, and closeout flow catching runtime
+configuration drift during a service-only task.
 
 ### What It Helps With
 

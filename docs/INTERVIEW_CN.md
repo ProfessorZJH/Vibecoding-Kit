@@ -43,6 +43,18 @@ kit。很多 AI coding 工具本身会提供计划、上下文压缩、工具调
 
 对 Java 后端来说，这件事的价值在于，它把 AI 协作开发拉回到了正常工程治理里。它不保证 AI 永远不出错，但能把很多原本只存在于聊天上下文里的约束，变成仓库里可检查、可审计、可交接的项目状态。这比单纯强调 prompt 写得好不好，更像一个后端工程问题。
 
+### Java Service Governance Demo 讲法
+
+这个 demo 是我面 Java 后端时最容易讲清楚的一段。它模拟一个
+Spring 风格的订单服务任务：任务卡只允许改 `OrderService.java`，禁止改
+`application.yml`、`pom.xml` 和 controller。demo 里先做合法的 service
+层改动，再模拟 AI 顺手改 runtime config。结果 guard 会报 unauthorized
+file，risk report 会把 runtime config change 标成 HIGH，最后 closeout
+会留下审计证据。
+
+这段 demo 的重点不是跑 Java 编译，而是证明这套治理层可以落到真实后端开发场景里：service
+边界、运行时配置、依赖文件、checkpoint 和 closeout 都能被纳入同一套仓库协议。
+
 ### Agent 工程版
 
 如果从 Agent 工程角度讲，我做的不是新的模型能力，而是模型外的治理层。现在主流 AI coding 工具都有自己的计划、上下文压缩和工具调用机制，但它们大多是通用能力，不会天然理解某个仓库在某个时刻的精确边界。比如当前任务只允许改一个 service 文件、禁止碰 runtime config、要求本地 commit checkpoint、要求 closeout evidence，这些都更适合作为 repository contract，而不是完全依赖工具内部状态。
