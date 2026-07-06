@@ -212,6 +212,7 @@ bash scripts/install-git-hooks.sh
 - [Workflow Layer](core/workflows/README.md)
 - [Managed Adapter Blocks](docs/adapter-managed-blocks.md)
 - [v0.4.0 Release Notes](docs/releases/v0.4.0.md)
+- [v0.4.0 GitHub Release](https://github.com/ProfessorZJH/Vibecoding-Kit/releases/tag/v0.4.0)
 - [v0.3.0 Release Notes](docs/releases/v0.3.0.md)
 - [v0.2.0 Release Notes](docs/releases/v0.2.0.md)
 - [v0.1.0 Release Notes](docs/releases/v0.1.0.md)
