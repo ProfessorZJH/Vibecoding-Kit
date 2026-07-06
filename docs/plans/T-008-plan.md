@@ -43,7 +43,7 @@ commit:
 
 ## S-002 Add Failing Installer UX Coverage
 
-status: pending
+status: completed
 
 allowed_changes:
 - scripts/test-kit.sh
@@ -84,7 +84,7 @@ commit:
 
 ## S-003 Implement Dry-Run and Safe Merge
 
-status: pending
+status: completed
 
 allowed_changes:
 - installer/init.sh
@@ -126,7 +126,7 @@ commit:
 
 ## S-004 Add Installed Doctor
 
-status: pending
+status: completed
 
 allowed_changes:
 - core/scripts/ai-doctor.sh
@@ -165,7 +165,7 @@ commit:
 
 ## S-005 Wire README and v0.7.0 Release Notes
 
-status: pending
+status: completed
 
 allowed_changes:
 - README.md
@@ -205,7 +205,7 @@ commit:
 
 ## S-006 Verify and Close Out T-008
 
-status: pending
+status: completed
 
 allowed_changes:
 - docs/plans/T-008-plan.md
