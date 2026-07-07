@@ -20,9 +20,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ripgrep
 
-      - name: Run kit tests
-        run: bash scripts/test-kit.sh
-
       - name: Check whitespace
         run: |
           if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
@@ -30,3 +27,15 @@ jobs:
           else
             git diff --check
           fi
+
+      - name: Check shell syntax
+        run: |
+          bash -n installer/init.sh
+          bash -n scripts/test-kit.sh
+          bash -n scripts/readability-guard.sh
+
+      - name: Check readability
+        run: bash scripts/readability-guard.sh
+
+      - name: Run kit tests
+        run: bash scripts/test-kit.sh
