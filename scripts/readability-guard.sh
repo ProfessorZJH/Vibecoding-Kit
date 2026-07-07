@@ -54,11 +54,16 @@ markdown_files=(
   examples/README.md
   CHANGELOG.md
   docs/releases/v0.7.0.md
+  docs/releases/v0.8.0.md
   docs/tasks/T-007.md
   docs/tasks/T-008.md
   docs/tasks/T-009.md
+  docs/tasks/T-010.md
+  docs/tasks/T-011.md
   docs/plans/T-008-plan.md
   docs/plans/T-009-plan.md
+  docs/plans/T-010-plan.md
+  docs/plans/T-011-plan.md
 )
 
 shell_files=(
@@ -77,6 +82,9 @@ check_min_lines examples/README.md 10
 check_min_lines CHANGELOG.md 20
 check_min_lines installer/init.sh 100
 check_min_lines scripts/test-kit.sh 200
+check_min_lines scripts/readability-guard.sh 50
+check_min_lines docs/tasks/T-011.md 30
+check_min_lines docs/plans/T-011-plan.md 30
 
 for file in "${markdown_files[@]}"; do
   check_max_line_length "$file" 180
